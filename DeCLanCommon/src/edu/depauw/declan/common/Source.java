@@ -1,5 +1,13 @@
 package edu.depauw.declan.common;
 
+/**
+ * A Source object wraps a Reader (which will typically be a BufferedReader
+ * wrapping another Reader connected to a file or an input stream) with the
+ * ability to track the current line and column number, and to examine the
+ * current character multiple times.
+ * 
+ * @author bhoward
+ */
 public interface Source extends AutoCloseable {
 	/**
 	 * Advance to the next available character, if any. Either the new character
@@ -26,13 +34,7 @@ public interface Source extends AutoCloseable {
 	boolean atEOF();
 
 	/**
-	 * @return the line number (starting at 1) of the current character
+	 * @return the Position of the current character
 	 */
-	int getLine();
-
-	/**
-	 * @return the column number (starting at 1) of the current character
-	 */
-	int getColumn();
-
+	Position getPosition();
 }

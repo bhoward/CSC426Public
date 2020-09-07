@@ -20,10 +20,10 @@ public enum TokenType {
 	AND, // and operator "&"
 	NOT, // not operator "~"
 	ASSIGN, // assignment operator ":="
-	COMMA, // comma ","
-	SEMI, // semicolon ";"
-	PERIOD, // period "."
 	COLON, // colon ":"
+	SEMI, // semicolon ";"
+	COMMA, // comma ","
+	PERIOD, // period "."
 	LPAR, // left parenthesis "("
 	RPAR, // right parenthesis ")"
 	// the rest are reserved words whose lexeme matches their name
