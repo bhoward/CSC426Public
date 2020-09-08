@@ -82,11 +82,16 @@ public class MyLexer implements Lexer {
 					position = source.getPosition();
 					source.advance();
 					continue;
+				} else if (c == '=') {
+					position = source.getPosition();
+					source.advance();
+					nextToken = tokenFactory.makeToken(TokenType.EQ, position);
+					return;
 				} else {
 					// TODO handle other characters here
 					
 					position = source.getPosition();
-					System.out.println("Unrecognized character " + c + " at " + position);
+					System.err.println("Unrecognized character " + c + " at " + position);
 					source.advance();
 					continue;
 				}

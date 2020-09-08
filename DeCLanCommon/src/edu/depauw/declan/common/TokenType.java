@@ -7,25 +7,25 @@ public enum TokenType {
 	ID, // identifier, such as a variable name
 	NUM, // numeric literal
 	STRING, // string literal
-	EQ, // equals sign "="
-	NE, // not equal "#"
 	LT, // less than "<"
 	LE, // less than or equal "<="
 	GT, // greater than ">"
 	GE, // greater than or equal ">="
+	ASSIGN, // assignment operator ":="
+	COLON, // colon ":"
+	LPAR, // left parenthesis "("
+	RPAR, // right parenthesis ")"
+	EQ, // equals sign "="
+	NE, // not equal "#"
 	PLUS, // plus operator "+"
 	MINUS, // minus operator "-"
 	TIMES, // times operator "*"
 	DIVIDE, // divide operator "/"
 	AND, // and operator "&"
 	NOT, // not operator "~"
-	ASSIGN, // assignment operator ":="
-	COLON, // colon ":"
 	SEMI, // semicolon ";"
 	COMMA, // comma ","
 	PERIOD, // period "."
-	LPAR, // left parenthesis "("
-	RPAR, // right parenthesis ")"
 	// the rest are reserved words whose lexeme matches their name
 	BEGIN, BY, CONST, DIV, DO, ELSE, ELSIF, END, FALSE, FOR, IF, MOD, OR, PROCEDURE, REPEAT, RETURN, THEN, TO, TRUE,
 	UNTIL, VAR, WHILE;
