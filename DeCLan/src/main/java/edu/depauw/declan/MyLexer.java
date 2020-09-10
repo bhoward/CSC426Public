@@ -138,6 +138,8 @@ public class MyLexer implements Lexer {
 			// Final token was :
 			nextToken = tokenFactory.makeToken(TokenType.COLON, position);
 			return;
+			
+		// TODO handle more state cases here as well
 		}
 	}
 }

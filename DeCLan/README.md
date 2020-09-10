@@ -17,7 +17,7 @@ integer = digit {digit} | digit {hexDigit} "H".
 real = digit {digit} "." {digit} [ScaleFactor].
 ScaleFactor = "E" ["+" | "-"] digit {digit}.
 number = integer | real.
-string = """ {non-"-character} """ | digit {hexDigit} "X".
+string = """ {non-"-character} """.
 
 ConstDecl = ident "=" ConstExpr.
 ConstExpr = expression. // with no procedure calls, and only idents named in previous ConstDecls.
