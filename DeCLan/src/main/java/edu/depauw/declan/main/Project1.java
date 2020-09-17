@@ -1,4 +1,4 @@
-package edu.depauw.declan;
+package edu.depauw.declan.main;
 
 import edu.depauw.declan.common.Lexer;
 import edu.depauw.declan.common.Token;

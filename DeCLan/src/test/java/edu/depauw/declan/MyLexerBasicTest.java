@@ -9,12 +9,11 @@ import java.io.StringReader;
 import org.junit.jupiter.api.Test;
 
 import edu.depauw.declan.common.Lexer;
+import edu.depauw.declan.common.ReaderSource;
 import edu.depauw.declan.common.Source;
 import edu.depauw.declan.common.Token;
-import edu.depauw.declan.common.TokenFactory;
-import edu.depauw.declan.model.LexerImpl;
-import edu.depauw.declan.model.SourceImpl;
-import edu.depauw.declan.model.TokenFactoryImpl;
+import edu.depauw.declan.main.MyLexer;
+import edu.depauw.declan.model.ReferenceLexer;
 
 class MyLexerBasicTest {
 
@@ -81,12 +80,11 @@ class MyLexerBasicTest {
 	}
 
 	void compareToModel(String input) {
-		Source mySource = new SourceImpl(new StringReader(input));
-		Source modelSource = new SourceImpl(new StringReader(input));
-		TokenFactory tokenFactory = new TokenFactoryImpl();
+		Source mySource = new ReaderSource(new StringReader(input));
+		Source modelSource = new ReaderSource(new StringReader(input));
 
-		try (Lexer myLexer = new MyLexer(mySource, tokenFactory);
-				Lexer modelLexer = new LexerImpl(modelSource, tokenFactory)) {
+		try (Lexer myLexer = new MyLexer(mySource);
+				Lexer modelLexer = new ReferenceLexer(modelSource)) {
 			while (modelLexer.hasNext()) {
 				assertTrue(myLexer.hasNext(), "Not enough tokens");
 				Token modelToken = modelLexer.next();

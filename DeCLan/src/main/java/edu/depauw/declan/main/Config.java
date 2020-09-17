@@ -1,4 +1,4 @@
-package edu.depauw.declan;
+package edu.depauw.declan.main;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -10,8 +10,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import edu.depauw.declan.common.Lexer;
+import edu.depauw.declan.common.ReaderSource;
 import edu.depauw.declan.common.Source;
-import edu.depauw.declan.common.TokenFactory;
+import edu.depauw.declan.model.ReferenceLexer;
 
 /**
  * Configure which implementations of the various common interfaces will be
@@ -22,7 +23,6 @@ import edu.depauw.declan.common.TokenFactory;
  */
 public class Config {
 	private Source source;
-	private TokenFactory tokenFactory;
 	private Lexer lexer;
 
 	// A simple demo program
@@ -75,25 +75,18 @@ public class Config {
 			// Use the demo source as input
 			reader = new StringReader(demo);
 		}
-		source = new edu.depauw.declan.model.SourceImpl(reader);
-
-		// Initialize the token factory
-		tokenFactory = new edu.depauw.declan.model.TokenFactoryImpl();
+		source = new ReaderSource(reader);
 
 		// Initialize the lexer
 		if (useModel) {
-			lexer = new edu.depauw.declan.model.LexerImpl(source, tokenFactory);
+			lexer = new ReferenceLexer(source);
 		} else {
-			lexer = new MyLexer(source, tokenFactory);
+			lexer = new MyLexer(source);
 		}
 	}
 
 	public Source getSource() {
 		return source;
-	}
-
-	public TokenFactory getTokenFactory() {
-		return tokenFactory;
 	}
 
 	public Lexer getLexer() {

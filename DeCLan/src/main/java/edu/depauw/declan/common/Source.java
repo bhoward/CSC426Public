@@ -1,8 +1,7 @@
 package edu.depauw.declan.common;
 
 /**
- * A Source object wraps a Reader (which will typically be a BufferedReader
- * wrapping another Reader connected to a file or an input stream) with the
+ * A Source object wraps an input source of characters with the
  * ability to track the current line and column number, and to examine the
  * current character multiple times.
  * 
@@ -16,7 +15,7 @@ public interface Source extends AutoCloseable {
 	void advance();
 
 	/**
-	 * Close the underlying Reader.
+	 * Close the underlying input source.
 	 */
 	void close();
 

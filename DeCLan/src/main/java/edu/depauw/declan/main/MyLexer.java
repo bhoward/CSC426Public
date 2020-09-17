@@ -1,4 +1,4 @@
-package edu.depauw.declan;
+package edu.depauw.declan.main;
 
 import java.util.NoSuchElementException;
 
@@ -6,17 +6,14 @@ import edu.depauw.declan.common.Lexer;
 import edu.depauw.declan.common.Position;
 import edu.depauw.declan.common.Source;
 import edu.depauw.declan.common.Token;
-import edu.depauw.declan.common.TokenFactory;
 import edu.depauw.declan.common.TokenType;
 
 public class MyLexer implements Lexer {
 	private Source source;
-	private TokenFactory tokenFactory;
 	private Token nextToken;
 
-	public MyLexer(Source source, TokenFactory tokenFactory) {
+	public MyLexer(Source source) {
 		this.source = source;
-		this.tokenFactory = tokenFactory;
 		this.nextToken = null;
 	}
 
@@ -85,7 +82,7 @@ public class MyLexer implements Lexer {
 				} else if (c == '=') {
 					position = source.getPosition();
 					source.advance();
-					nextToken = tokenFactory.makeToken(TokenType.EQ, position);
+					nextToken = Token.makeToken(TokenType.EQ, position);
 					return;
 				} else {
 					// TODO handle other characters here
@@ -103,7 +100,7 @@ public class MyLexer implements Lexer {
 					source.advance();
 					continue;
 				} else {
-					nextToken = tokenFactory.makeIdToken(lexeme.toString(), position);
+					nextToken = Token.makeIdToken(lexeme.toString(), position);
 					return;
 				}
 			
@@ -111,10 +108,10 @@ public class MyLexer implements Lexer {
 				// Check for : vs :=
 				if (c == '=') {
 					source.advance();
-					nextToken = tokenFactory.makeToken(TokenType.ASSIGN, position);
+					nextToken = Token.makeToken(TokenType.ASSIGN, position);
 					return;
 				} else {
-					nextToken = tokenFactory.makeToken(TokenType.COLON, position);
+					nextToken = Token.makeToken(TokenType.COLON, position);
 					return;
 				}
 				
@@ -131,12 +128,12 @@ public class MyLexer implements Lexer {
 			
 		case IDENT:
 			// Successfully ended an identifier or keyword
-			nextToken = tokenFactory.makeIdToken(lexeme.toString(), position);
+			nextToken = Token.makeIdToken(lexeme.toString(), position);
 			return;
 			
 		case COLON:
 			// Final token was :
-			nextToken = tokenFactory.makeToken(TokenType.COLON, position);
+			nextToken = Token.makeToken(TokenType.COLON, position);
 			return;
 			
 		// TODO handle more state cases here as well
