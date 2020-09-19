@@ -18,22 +18,27 @@ class MyLexerOptionalTest {
 	// The following test optional features
 	@Test
 	void testHexIntegers() {
-		compareToModel("0H 9H 0ABCDEFH");
+		String input = "0H 9H 0ABCDEFH";
+		compareToModel(input);
 	}
 	
 	@Test
 	void testRealNumbers() {
-		compareToModel("0. 1.2 345.678 01.E23 4.5E+6 7.8E-09");
+		String input = "0. 1.2 345.678 01.E23 4.5E+6 7.8E-09";
+		compareToModel(input);
 	}
 	
 	@Test
 	void testNestedComments() {
-		compareToModel("(**((***))**) (* \"(*\" *) \" *) (*(*(*(*here*)*)there*)*)everywhere");
+		String input = "(**((***))**) (* \"(*\" *)\n"
+				+ "\" *) (*(*(*(*here*)*)there*)*)everywhere";
+		compareToModel(input);
 	}
 	
 	@Test
 	void testAdvancedErrorRecovery() {
-		compareToModel("1F+2E-3.4E*5.E-D6");
+		String input = "1F+2E-3.4E*5.E-D6";
+		compareToModel(input);
 	}
 
 	void compareToModel(String input) {
@@ -41,7 +46,7 @@ class MyLexerOptionalTest {
 		Source modelSource = new ReaderSource(new StringReader(input));
 
 		try (Lexer myLexer = new MyLexer(mySource);
-				Lexer modelLexer = new ReferenceLexer(modelSource)) {
+			 Lexer modelLexer = new ReferenceLexer(modelSource)) {
 			while (modelLexer.hasNext()) {
 				assertTrue(myLexer.hasNext(), "Not enough tokens");
 				Token modelToken = modelLexer.next();

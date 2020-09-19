@@ -18,43 +18,59 @@ class MyLexerBasicTest {
 
 	@Test
 	void testIdentifiers() {
-		compareToModel("This is test1");
+		String input = "This is test1";
+		compareToModel(input);
 	}
 	
 	@Test
 	void testReservedWords() {
-		compareToModel("BEGIN BY CONST DIV DO ELSE ELSIF END FALSE FOR IF MOD OR PROCEDURE REPEAT RETURN THEN TO TRUE UNTIL VAR WHILE");
+		String input = "BEGIN BY CONST DIV DO ELSE ELSIF END FALSE FOR IF\n"
+				+ "MOD OR PROCEDURE REPEAT RETURN THEN TO TRUE UNTIL VAR WHILE";
+		compareToModel(input);
 	}
 
 	@Test
 	void testIntegers() {
-		compareToModel("0 11 9999 0123456789");
+		String input = "0 11 9999 0123456789";
+		compareToModel(input);
 	}
 	
 	@Test
 	void testStrings() {
-		compareToModel("\"\" \"testing\" \"!@#$%^&(*)-_=+\"");
+		String input = "\"\" \"testing\" \"!@#$%^&(*)-_=+\"";
+		compareToModel(input);
 	}
 	
 	@Test
 	void testComments() {
-		compareToModel("(* this is a comment *) ((**)) (***)");
+		String input = "(* this is a comment *) ((**)) (***) (* * ) *)";
+		compareToModel(input);
 	}
 	
 	@Test
 	void testOperators() {
-		compareToModel("<<=>>=:=:()=#+-*/&~;,.");
+		String input = "<<=>>=:=:()=#+-*/&~;,.";
+		compareToModel(input);
 	}
 	
 	@Test
 	void testCombinations() {
-		compareToModel("PROCEDURE a(b:INTEGER,VAR c:REAL):BOOLEAN;(* body goes here *)BEGIN a(42,314)END.");
+		String input = "PROCEDURE a(b:INTEGER,VAR c:REAL):BOOLEAN;\n"
+				+ "\t(* body goes here *)\n"
+				+ "BEGIN a(42,3+14)END.\n";
+		compareToModel(input);
 	}
 	
 	@Test
 	void testErrorRecovery() {
-		compareToModel("bad! &\"unclosed!");
-		compareToModel("`!@$%^_{}[]|\'ok?(**");
+		String input = "bad! &\"unclosed!";
+		compareToModel(input);
+	}
+	
+	@Test
+	void testErrorRecovery2() {
+		String input = "`!@$%^_{}[]|\'ok?(**";
+		compareToModel(input);
 	}
 	
 	void compareToModel(String input) {
@@ -62,7 +78,7 @@ class MyLexerBasicTest {
 		Source modelSource = new ReaderSource(new StringReader(input));
 
 		try (Lexer myLexer = new MyLexer(mySource);
-				Lexer modelLexer = new ReferenceLexer(modelSource)) {
+			 Lexer modelLexer = new ReferenceLexer(modelSource)) {
 			while (modelLexer.hasNext()) {
 				assertTrue(myLexer.hasNext(), "Not enough tokens");
 				Token modelToken = modelLexer.next();
