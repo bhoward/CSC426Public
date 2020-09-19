@@ -82,7 +82,7 @@ public class MyLexer implements Lexer {
 				} else if (c == '=') {
 					position = source.getPosition();
 					source.advance();
-					nextToken = Token.makeToken(TokenType.EQ, position);
+					nextToken = Token.create(TokenType.EQ, position);
 					return;
 				} else {
 					// TODO handle other characters here
@@ -100,7 +100,7 @@ public class MyLexer implements Lexer {
 					source.advance();
 					continue;
 				} else {
-					nextToken = Token.makeIdToken(lexeme.toString(), position);
+					nextToken = Token.createId(lexeme.toString(), position);
 					return;
 				}
 			
@@ -108,10 +108,10 @@ public class MyLexer implements Lexer {
 				// Check for : vs :=
 				if (c == '=') {
 					source.advance();
-					nextToken = Token.makeToken(TokenType.ASSIGN, position);
+					nextToken = Token.create(TokenType.ASSIGN, position);
 					return;
 				} else {
-					nextToken = Token.makeToken(TokenType.COLON, position);
+					nextToken = Token.create(TokenType.COLON, position);
 					return;
 				}
 				
@@ -128,12 +128,12 @@ public class MyLexer implements Lexer {
 			
 		case IDENT:
 			// Successfully ended an identifier or keyword
-			nextToken = Token.makeIdToken(lexeme.toString(), position);
+			nextToken = Token.createId(lexeme.toString(), position);
 			return;
 			
 		case COLON:
 			// Final token was :
-			nextToken = Token.makeToken(TokenType.COLON, position);
+			nextToken = Token.create(TokenType.COLON, position);
 			return;
 			
 		// TODO handle more state cases here as well

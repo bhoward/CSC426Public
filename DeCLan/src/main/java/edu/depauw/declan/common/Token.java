@@ -1,5 +1,7 @@
 package edu.depauw.declan.common;
 
+import java.util.Objects;
+
 /**
  * A Token represents one lexical unit of a DeCLan source program. A Token
  * object stores a position (line and column numbers, each starting from 1), a
@@ -29,17 +31,6 @@ public class Token {
 		this.lexeme = lexeme;
 	}
 
-	// Override the default toString() for use in development and debugging.
-	@Override
-	public String toString() {
-		StringBuilder result = new StringBuilder(type.toString());
-		if (lexeme != null) {
-			result.append(" ").append(lexeme);
-		}
-		result.append(" ").append(position);
-		return result.toString();
-	}
-
 	public TokenType getType() {
 		return type;
 	}
@@ -52,6 +43,35 @@ public class Token {
 		return position;
 	}
 
+	// Override the default toString(), hashCode(), and equals() for use in
+	// development and debugging.
+	@Override
+	public String toString() {
+		StringBuilder result = new StringBuilder(type.toString());
+		if (lexeme != null) {
+			result.append(" ").append(lexeme);
+		}
+		result.append(" ").append(position);
+		return result.toString();
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(lexeme, position, type);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Token other = (Token) obj;
+		return Objects.equals(lexeme, other.lexeme) && Objects.equals(position, other.position) && type == other.type;
+	}
+
 	/**
 	 * Create a Token for a string literal. The lexeme is just the contents of the
 	 * string (without surrounding quotes).
@@ -61,7 +81,7 @@ public class Token {
 	 * @param column
 	 * @return
 	 */
-	public static Token makeStringToken(String lexeme, Position position) {
+	public static Token createString(String lexeme, Position position) {
 		return new Token(position, TokenType.STRING, lexeme);
 	}
 
@@ -73,7 +93,7 @@ public class Token {
 	 * @param column
 	 * @return
 	 */
-	public static Token makeNumToken(String lexeme, Position position) {
+	public static Token createNum(String lexeme, Position position) {
 		return new Token(position, TokenType.NUM, lexeme);
 	}
 
@@ -86,7 +106,7 @@ public class Token {
 	 * @param column
 	 * @return
 	 */
-	public static Token makeIdToken(String lexeme, Position position) {
+	public static Token createId(String lexeme, Position position) {
 		if (TokenType.reserved.containsKey(lexeme)) {
 			return new Token(position, TokenType.reserved.get(lexeme), null);
 		} else {
@@ -102,7 +122,7 @@ public class Token {
 	 * @param column
 	 * @return
 	 */
-	public static Token makeToken(TokenType type, Position position) {
+	public static Token create(TokenType type, Position position) {
 		return new Token(position, type, null);
 	}
 }
