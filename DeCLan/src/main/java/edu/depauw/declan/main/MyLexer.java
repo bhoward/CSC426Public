@@ -2,6 +2,7 @@ package edu.depauw.declan.main;
 
 import java.util.NoSuchElementException;
 
+import edu.depauw.declan.common.ErrorLog;
 import edu.depauw.declan.common.Lexer;
 import edu.depauw.declan.common.Position;
 import edu.depauw.declan.common.Source;
@@ -10,10 +11,12 @@ import edu.depauw.declan.common.TokenType;
 
 public class MyLexer implements Lexer {
 	private Source source;
+	private ErrorLog errorLog;
 	private Token nextToken;
 
-	public MyLexer(Source source) {
+	public MyLexer(Source source, ErrorLog errorLog) {
 		this.source = source;
+		this.errorLog = errorLog;
 		this.nextToken = null;
 	}
 
@@ -88,7 +91,7 @@ public class MyLexer implements Lexer {
 					// TODO handle other characters here
 					
 					position = source.getPosition();
-					System.err.println("Unrecognized character " + c + " at " + position);
+					errorLog.add("Unrecognized character " + c, position);
 					source.advance();
 					continue;
 				}

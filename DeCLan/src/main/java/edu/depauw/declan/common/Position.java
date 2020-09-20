@@ -7,7 +7,7 @@ import java.util.Objects;
  * 
  * @author bhoward
  */
-public class Position {
+public class Position implements Comparable<Position> {
 	private final int line, column;
 	
 	public Position(int line, int column) {
@@ -43,5 +43,19 @@ public class Position {
 			return false;
 		Position other = (Position) obj;
 		return line == other.line && column == other.column;
+	}
+
+	public int compareTo(Position other) {
+		if (line < other.line) {
+			return -1;
+		} else if (line > other.line) {
+			return 1;
+		} else if (column < other.column) {
+			return -1;
+		} else if (column > other.column) {
+			return 1;
+		} else {
+			return 0;
+		}
 	}
 }

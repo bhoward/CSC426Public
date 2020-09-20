@@ -1,5 +1,6 @@
 package edu.depauw.declan.main;
 
+import edu.depauw.declan.common.ErrorLog;
 import edu.depauw.declan.common.Lexer;
 import edu.depauw.declan.common.Token;
 
@@ -18,6 +19,10 @@ public class Project1 {
 				Token token = lexer.next();
 				System.out.println(token);
 			}
+		}
+		
+		for (ErrorLog.LogItem item : config.getErrorLog()) {
+			System.err.println(item);
 		}
 		
 		System.out.println("DONE");

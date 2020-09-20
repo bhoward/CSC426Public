@@ -9,6 +9,7 @@ import java.io.StringReader;
 import java.util.Arrays;
 import java.util.List;
 
+import edu.depauw.declan.common.ErrorLog;
 import edu.depauw.declan.common.Lexer;
 import edu.depauw.declan.common.ReaderSource;
 import edu.depauw.declan.common.Source;
@@ -23,6 +24,7 @@ import edu.depauw.declan.model.ReferenceLexer;
  */
 public class Config {
 	private Source source;
+	private ErrorLog errorLog;
 	private Lexer lexer;
 
 	// A simple demo program
@@ -47,7 +49,7 @@ public class Config {
 	public Config(String[] args) {
 		List<String> argList = Arrays.asList(args);
 		boolean useModel = false;
-
+		
 		// if first arg is --model, use the model implementations
 		if (argList.size() > 0 && argList.get(0).equals("--model")) {
 			argList = argList.subList(1, argList.size());
@@ -77,16 +79,22 @@ public class Config {
 		}
 		source = new ReaderSource(reader);
 
+		errorLog = new ErrorLog();
+
 		// Initialize the lexer
 		if (useModel) {
-			lexer = new ReferenceLexer(source);
+			lexer = new ReferenceLexer(source, errorLog);
 		} else {
-			lexer = new MyLexer(source);
+			lexer = new MyLexer(source, errorLog);
 		}
 	}
 
 	public Source getSource() {
 		return source;
+	}
+	
+	public ErrorLog getErrorLog() {
+		return errorLog;
 	}
 
 	public Lexer getLexer() {
