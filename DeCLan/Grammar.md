@@ -63,7 +63,7 @@ VariableDecl -> IdentList : Type
 Expression -> SimpleExpr
 Expression -> SimpleExpr Relation SimpleExpr
 
-Relation -> = | # | < | <-> | > | >->
+Relation -> = | # | < | <= | > | >=
 
 SimpleExpr -> + Term SimpleExprRest
 SimpleExpr -> - Term SimpleExprRest
@@ -84,7 +84,7 @@ MulOperator -> * | / | DIV | MOD | &
 Factor -> number | string | TRUE | FALSE
 Factor -> ident ActualParameters
 Factor -> ident
-Factor -> ( expression )
+Factor -> ( Expression )
 Factor -> ~ Factor
 
 ActualParameters -> ( ExpList )
