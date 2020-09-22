@@ -20,6 +20,10 @@ A comment is any sequence of characters, other than `*)`, surrounded by a leadin
 
 ```
 BEGIN, CONST, DIV, END, MOD
+Statement -> ident ( Expression )
+
+Statement -> ident ( Expression )
+
 ```
 
 ## Syntax Rules
@@ -40,8 +44,10 @@ StatementSequence -> Statement StatementSequenceRest
 StatementSequenceRest -> ; Statement StatementSequenceRest
 StatementSequenceRest ->
 
-Statement -> ident ( Expression )
+Statement -> ProcedureCall
 Statement ->
+
+ProcedureCall -> ident ( Expression )
 
 Expression -> + Term ExprRest
 Expression -> - Term ExprRest
@@ -57,7 +63,7 @@ Term -> Factor TermRest
 TermRest -> MulOperator Factor TermRest
 TermRest ->
 
-MulOperator -> * | / | DIV | MOD
+MulOperator -> * | DIV | MOD
 
 Factor -> number | ident
 Factor -> ( Expression )

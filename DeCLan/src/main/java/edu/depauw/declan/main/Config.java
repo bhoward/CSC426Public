@@ -11,9 +11,11 @@ import java.util.List;
 
 import edu.depauw.declan.common.ErrorLog;
 import edu.depauw.declan.common.Lexer;
+import edu.depauw.declan.common.Parser;
 import edu.depauw.declan.common.ReaderSource;
 import edu.depauw.declan.common.Source;
 import edu.depauw.declan.model.ReferenceLexer;
+import edu.depauw.declan.model.ReferenceParser;
 
 /**
  * Configure which implementations of the various common interfaces will be
@@ -26,25 +28,37 @@ public class Config {
 	private Source source;
 	private ErrorLog errorLog;
 	private Lexer lexer;
+	private Parser parser;
 
-	// A simple demo program
+//	// A simple demo program
+//	private final String demo =
+//			  "CONST six = 6; seven = 7;\n"
+//			+ "VAR answer : INTEGER;\n"
+//			+ "PROCEDURE gcd(a: INTEGER, b: INTEGER): INTEGER;\n"
+//			+ "  VAR c : INTEGER;\n"
+//			+ "  BEGIN\n"
+//			+ "    IF b = 0 THEN c := a\n"
+//			+ "    ELSE c := gcd(b, a MOD b)\n"
+//			+ "    END;\n"
+//			+ "    RETURN c\n"
+//			+ "  END gcd;\n"
+//			+ "BEGIN\n"
+//			+ "  answer := six * seven * gcd(six, seven);\n"
+//			+ "  PrintString(\"The answer is \");\n"
+//			+ "  PrintInt(answer);\n"
+//			+ "  PrintLn()\n"
+//			+ "END.\n";
+	
+	// A simple demo program suitable for Project 2
 	private final String demo =
 			  "CONST six = 6; seven = 7;\n"
-			+ "VAR answer : INTEGER;\n"
-			+ "PROCEDURE gcd(a: INTEGER, b: INTEGER): INTEGER;\n"
-			+ "  VAR c : INTEGER;\n"
-			+ "  BEGIN\n"
-			+ "    IF b = 0 THEN c := a\n"
-			+ "    ELSE c := gcd(b, a MOD b)\n"
-			+ "    END;\n"
-			+ "    RETURN c\n"
-			+ "  END gcd;\n"
 			+ "BEGIN\n"
-			+ "  answer := six * seven * gcd(six, seven);\n"
-			+ "  PrintString(\"The answer is \");\n"
-			+ "  PrintInt(answer);\n"
-			+ "  PrintLn()\n"
+			+ "  PrintInt(seven - six);\n"
+			+ "  PrintInt(2 * (six + seven) MOD six);\n"
+			+ "  PrintInt(six - seven DIV 2);\n"
+			+ "  PrintInt(six * seven);\n"
 			+ "END.\n";
+
 
 	public Config(String[] args) {
 		List<String> argList = Arrays.asList(args);
@@ -87,6 +101,13 @@ public class Config {
 		} else {
 			lexer = new MyLexer(source, errorLog);
 		}
+		
+		// Initialize the parser
+		if (useModel) {
+			parser = new ReferenceParser(lexer, errorLog);
+		} else {
+			parser = new MyParser(lexer, errorLog);
+		}
 	}
 
 	public Source getSource() {
@@ -99,5 +120,9 @@ public class Config {
 
 	public Lexer getLexer() {
 		return lexer;
+	}
+	
+	public Parser getParser() {
+		return parser;
 	}
 }
