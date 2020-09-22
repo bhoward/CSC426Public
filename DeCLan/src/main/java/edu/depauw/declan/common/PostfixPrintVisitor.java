@@ -1,9 +1,9 @@
-package edu.depauw.declan.main;
+package edu.depauw.declan.common;
 
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
-import edu.depauw.declan.common.ASTVisitor;
 import edu.depauw.declan.common.ast.BinaryOperation;
 import edu.depauw.declan.common.ast.ConstDecl;
 import edu.depauw.declan.common.ast.EmptyStatement;
@@ -16,9 +16,23 @@ import edu.depauw.declan.common.ast.UnaryOperation;
 
 public class PostfixPrintVisitor implements ASTVisitor {
 	private Map<String, String> environment;
-	
+	private PrintWriter out;
+
+	/**
+	 * Construct a default PostfixPrintVisitor that writes to the console.
+	 */
 	public PostfixPrintVisitor() {
+		this(new PrintWriter(System.out, true));
+	}
+
+	/**
+	 * Construct a PostfixPrintVisitor that sends output to the given PrintWriter.
+	 * 
+	 * @param out
+	 */
+	public PostfixPrintVisitor(PrintWriter out) {
 		this.environment = new HashMap<>();
+		this.out = out;
 	}
 
 	@Override
@@ -26,7 +40,7 @@ public class PostfixPrintVisitor implements ASTVisitor {
 		for (ConstDecl constDecl : program.getConstDecls()) {
 			constDecl.accept(this);
 		}
-		
+
 		for (Statement statement : program.getStatements()) {
 			statement.accept(this);
 		}
@@ -36,7 +50,7 @@ public class PostfixPrintVisitor implements ASTVisitor {
 	public void visit(ConstDecl constDecl) {
 		Identifier id = constDecl.getIdentifier();
 		NumValue num = constDecl.getNumber();
-		
+
 		environment.put(id.getLexeme(), num.getLexeme());
 	}
 
@@ -44,7 +58,7 @@ public class PostfixPrintVisitor implements ASTVisitor {
 	public void visit(ProcedureCall procedureCall) {
 		if (procedureCall.getProcedureName().equals("PrintInt")) {
 			procedureCall.getArgument().accept(this);
-			System.out.println("PRINT");
+			out.println("PRINT");
 		} else {
 			// Ignore all other procedure calls
 		}
@@ -58,13 +72,13 @@ public class PostfixPrintVisitor implements ASTVisitor {
 	@Override
 	public void visit(UnaryOperation unaryOperation) {
 		unaryOperation.getExpression().accept(this);
-		
+
 		switch (unaryOperation.getOperator()) {
 		case PLUS:
 			// No output
 			break;
 		case MINUS:
-			System.out.println("NEGATE");
+			out.println("NEGATE");
 			break;
 		}
 	}
@@ -73,34 +87,34 @@ public class PostfixPrintVisitor implements ASTVisitor {
 	public void visit(BinaryOperation binaryOperation) {
 		binaryOperation.getLeft().accept(this);
 		binaryOperation.getRight().accept(this);
-		
+
 		switch (binaryOperation.getOperator()) {
 		case PLUS:
-			System.out.println("ADD");
+			out.println("ADD");
 			break;
 		case MINUS:
-			System.out.println("SUBTRACT");
+			out.println("SUBTRACT");
 			break;
 		case TIMES:
-			System.out.println("MULTIPLY");
+			out.println("MULTIPLY");
 			break;
 		case DIV:
-			System.out.println("DIVIDE");
+			out.println("DIVIDE");
 			break;
 		case MOD:
-			System.out.println("MODULO");
+			out.println("MODULO");
 			break;
 		}
 	}
 
 	@Override
 	public void visit(NumValue numValue) {
-		System.out.println(numValue.getLexeme());
+		out.println(numValue.getLexeme());
 	}
 
 	@Override
 	public void visit(Identifier identifier) {
 		String value = environment.get(identifier.getLexeme());
-		System.out.println(value);
+		out.println(value);
 	}
 }

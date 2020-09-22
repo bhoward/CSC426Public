@@ -6,8 +6,10 @@ import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Properties;
 
 import edu.depauw.declan.common.ErrorLog;
 import edu.depauw.declan.common.Lexer;
@@ -30,90 +32,99 @@ public class Config {
 	private Lexer lexer;
 	private Parser parser;
 
-//	// A simple demo program
-//	private final String demo =
-//			  "CONST six = 6; seven = 7;\n"
-//			+ "VAR answer : INTEGER;\n"
-//			+ "PROCEDURE gcd(a: INTEGER, b: INTEGER): INTEGER;\n"
-//			+ "  VAR c : INTEGER;\n"
-//			+ "  BEGIN\n"
-//			+ "    IF b = 0 THEN c := a\n"
-//			+ "    ELSE c := gcd(b, a MOD b)\n"
-//			+ "    END;\n"
-//			+ "    RETURN c\n"
-//			+ "  END gcd;\n"
-//			+ "BEGIN\n"
-//			+ "  answer := six * seven * gcd(six, seven);\n"
-//			+ "  PrintString(\"The answer is \");\n"
-//			+ "  PrintInt(answer);\n"
-//			+ "  PrintLn()\n"
-//			+ "END.\n";
-	
-	// A simple demo program suitable for Project 2
-	private final String demo =
-			  "CONST six = 6; seven = 7;\n"
-			+ "BEGIN\n"
-			+ "  PrintInt(seven - six);\n"
-			+ "  PrintInt(2 * (six + seven) MOD six);\n"
-			+ "  PrintInt(six - seven DIV 2);\n"
-			+ "  PrintInt(six * seven);\n"
-			+ "END.\n";
-
-
+	/**
+	 * Configure using command-line arguments and an empty set of properties.
+	 * 
+	 * @param args
+	 */
 	public Config(String[] args) {
-		List<String> argList = Arrays.asList(args);
-		boolean useModel = false;
+		this(args, new Properties());
+	}
+
+	/**
+	 * Configure using command-line arguments, with a set of properties as defaults.
+	 * 
+	 * @param args
+	 * @param props
+	 */
+	public Config(String[] args, Properties props) {
+		boolean useModelLexer = lookupBoolean(props, "useModelLexer");
+		boolean useModelParser = lookupBoolean(props, "useModelParser");
+		String sourceFile = props.getProperty("sourceFile", "");
+		String demoSource = props.getProperty("demoSource", "");
+
+		List<String> argList = new ArrayList<>();
+		argList.addAll(Arrays.asList(args));
 		
-		// if first arg is --model, use the model implementations
-		if (argList.size() > 0 && argList.get(0).equals("--model")) {
-			argList = argList.subList(1, argList.size());
-			useModel = true;
+		// if args contains --model, use the model implementations
+		if (argList.contains("--model")) {
+			useModelLexer = true;
+			useModelParser = true;
+			argList.remove("--model");
+		}
+
+		// if args contains --modelLexer, use the model lexer implementation
+		if (argList.contains("--modelLexer")) {
+			useModelLexer = true;
+			argList.remove("--modelLexer");
+		}
+
+		// if args contains --modelParser, use the model parser implementation
+		if (argList.contains("--modelParser")) {
+			useModelParser = true;
+			argList.remove("--modelParser");
+		}
+
+		// the first remaining arg, if any, is used as the file name
+		// if "-", use standard input
+		// if none, use the demo source
+		if (argList.size() > 0) {
+			sourceFile = argList.get(0);
 		}
 
 		// Initialize the source
 		Reader reader = null;
-		if (argList.size() > 0) {
-			// Use next argument as a filename
-			String fileName = argList.get(0);
-
-			if (fileName.equals("-")) {
-				// Special case: use standard input
-				reader = new BufferedReader(new InputStreamReader(System.in));
-			} else {
-				try {
-					reader = new BufferedReader(new FileReader(fileName));
-				} catch (FileNotFoundException e) {
-					System.err.println("Unable to open file: " + fileName);
-					System.exit(1);
-				}
-			}
-		} else {
+		if (sourceFile.equals("")) {
 			// Use the demo source as input
-			reader = new StringReader(demo);
+			reader = new StringReader(demoSource);
+		} else if (sourceFile.equals("-")) {
+			// Special case: use standard input
+			reader = new BufferedReader(new InputStreamReader(System.in));
+		} else {
+			try {
+				reader = new BufferedReader(new FileReader(sourceFile));
+			} catch (FileNotFoundException e) {
+				System.err.println("Unable to open file: " + sourceFile);
+				System.exit(1);
+			}
 		}
 		source = new ReaderSource(reader);
 
 		errorLog = new ErrorLog();
 
 		// Initialize the lexer
-		if (useModel) {
+		if (useModelLexer) {
 			lexer = new ReferenceLexer(source, errorLog);
 		} else {
 			lexer = new MyLexer(source, errorLog);
 		}
-		
+
 		// Initialize the parser
-		if (useModel) {
+		if (useModelParser) {
 			parser = new ReferenceParser(lexer, errorLog);
 		} else {
 			parser = new MyParser(lexer, errorLog);
 		}
 	}
 
+	private boolean lookupBoolean(Properties props, String key) {
+		return props.containsKey(key) && props.getProperty(key).equalsIgnoreCase("true");
+	}
+
 	public Source getSource() {
 		return source;
 	}
-	
+
 	public ErrorLog getErrorLog() {
 		return errorLog;
 	}
@@ -121,7 +132,7 @@ public class Config {
 	public Lexer getLexer() {
 		return lexer;
 	}
-	
+
 	public Parser getParser() {
 		return parser;
 	}
