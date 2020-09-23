@@ -1,4 +1,6 @@
-package edu.depauw.declan.common;
+package edu.depauw.declan.common.ast;
+
+import edu.depauw.declan.common.Position;
 
 /**
  * An ASTNode represents a node in an abstract syntax tree.

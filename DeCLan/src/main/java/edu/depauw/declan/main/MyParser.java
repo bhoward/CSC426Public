@@ -20,7 +20,8 @@ import edu.depauw.declan.common.ast.Statement;
 
 /**
  * A parser for a subset of DeCLan consisting only of integer constant
- * declarations and calls to PrintInt with integer expression arguments.
+ * declarations and calls to PrintInt with integer expression arguments. This is
+ * starter code for CSC426 Project 2.
  * 
  * @author bhoward
  */
@@ -170,30 +171,30 @@ public class MyParser implements Parser {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	// TODO handle the rest of the grammar:
 	//
-	//	Statement -> ProcedureCall
-	//	Statement ->
+	// Statement -> ProcedureCall
+	// Statement ->
 	//
-	//	ProcedureCall -> ident ( Expression )
+	// ProcedureCall -> ident ( Expression )
 	//
-	//	Expression -> + Term ExprRest
-	//	Expression -> - Term ExprRest
-	//	Expression -> Term ExprRest
+	// Expression -> + Term ExprRest
+	// Expression -> - Term ExprRest
+	// Expression -> Term ExprRest
 	//
-	//	ExprRest -> AddOperator Term ExprRest
-	//	ExprRest ->
+	// ExprRest -> AddOperator Term ExprRest
+	// ExprRest ->
 	//
-	//	AddOperator -> + | -
+	// AddOperator -> + | -
 	//
-	//	Term -> Factor TermRest
+	// Term -> Factor TermRest
 	//
-	//	TermRest -> MulOperator Factor TermRest
-	//	TermRest ->
+	// TermRest -> MulOperator Factor TermRest
+	// TermRest ->
 	//
-	//	MulOperator -> * | DIV | MOD
+	// MulOperator -> * | DIV | MOD
 	//
-	//	Factor -> number | ident
-	//	Factor -> ( Expression )
+	// Factor -> number | ident
+	// Factor -> ( Expression )
 }

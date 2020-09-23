@@ -3,13 +3,20 @@ package edu.depauw.declan.common;
 import java.util.Objects;
 
 /**
- * A Position records a combination of line:column numbers (each starting from 1) in a Source.
+ * A Position records a combination of line:column numbers (each starting from
+ * 1) in a Source.
  * 
  * @author bhoward
  */
 public class Position implements Comparable<Position> {
 	private final int line, column;
-	
+
+	/**
+	 * Construct a Position from the given line and column numbers
+	 * 
+	 * @param line
+	 * @param column
+	 */
 	public Position(int line, int column) {
 		this.line = line;
 		this.column = column;
@@ -45,6 +52,7 @@ public class Position implements Comparable<Position> {
 		return line == other.line && column == other.column;
 	}
 
+	@Override
 	public int compareTo(Position other) {
 		if (line < other.line) {
 			return -1;

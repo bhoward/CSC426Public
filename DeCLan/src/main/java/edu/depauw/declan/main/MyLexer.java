@@ -9,17 +9,33 @@ import edu.depauw.declan.common.Source;
 import edu.depauw.declan.common.Token;
 import edu.depauw.declan.common.TokenType;
 
+/**
+ * Starting code for the CSC426 Project 1 lexer.
+ * 
+ * @author bhoward
+ */
 public class MyLexer implements Lexer {
 	private Source source;
 	private ErrorLog errorLog;
 	private Token nextToken;
 
+	/**
+	 * Construct a Lexer that will read characters from the given Source and log any
+	 * error messages in the given ErrorLog.
+	 * 
+	 * @param source
+	 * @param errorLog
+	 */
 	public MyLexer(Source source, ErrorLog errorLog) {
 		this.source = source;
 		this.errorLog = errorLog;
+
+		// Setting nextToken to null is a signal that scanNext() needs to be called
+		// to examine more characters to find the next available Token.
 		this.nextToken = null;
 	}
 
+	@Override
 	public boolean hasNext() {
 		if (nextToken == null) {
 			scanNext();
@@ -28,6 +44,7 @@ public class MyLexer implements Lexer {
 		return nextToken != null;
 	}
 
+	@Override
 	public Token next() {
 		if (nextToken == null) {
 			scanNext();
@@ -42,10 +59,17 @@ public class MyLexer implements Lexer {
 		return result;
 	}
 
+	@Override
 	public void close() {
 		source.close();
 	}
 
+	/**
+	 * Declare the set of state labels for the finite-state machine behind this
+	 * Lexer.
+	 * 
+	 * @author bhoward
+	 */
 	private static enum State {
 		INIT, IDENT, COLON
 		// TODO add more states here
@@ -89,13 +113,13 @@ public class MyLexer implements Lexer {
 					return;
 				} else {
 					// TODO handle other characters here
-					
+
 					position = source.getPosition();
 					errorLog.add("Unrecognized character " + c, position);
 					source.advance();
 					continue;
 				}
-				
+
 			case IDENT:
 				// Handle next character of an identifier or keyword
 				if (Character.isLetterOrDigit(c)) {
@@ -106,7 +130,7 @@ public class MyLexer implements Lexer {
 					nextToken = Token.createId(lexeme.toString(), position);
 					return;
 				}
-			
+
 			case COLON:
 				// Check for : vs :=
 				if (c == '=') {
@@ -117,8 +141,8 @@ public class MyLexer implements Lexer {
 					nextToken = Token.create(TokenType.COLON, position);
 					return;
 				}
-				
-			// TODO and more state cases here
+
+				// TODO and more state cases here
 			}
 		}
 
@@ -128,17 +152,17 @@ public class MyLexer implements Lexer {
 			// No more tokens found
 			nextToken = null;
 			return;
-			
+
 		case IDENT:
 			// Successfully ended an identifier or keyword
 			nextToken = Token.createId(lexeme.toString(), position);
 			return;
-			
+
 		case COLON:
 			// Final token was :
 			nextToken = Token.create(TokenType.COLON, position);
 			return;
-			
+
 		// TODO handle more state cases here as well
 		}
 	}

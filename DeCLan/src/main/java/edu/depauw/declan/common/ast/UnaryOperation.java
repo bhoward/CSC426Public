@@ -1,12 +1,25 @@
 package edu.depauw.declan.common.ast;
 
-import edu.depauw.declan.common.ASTVisitor;
 import edu.depauw.declan.common.Position;
 
+/**
+ * An ASTNode representing a unary operation (+ or -, currently), with a single
+ * subexpression and an operator.
+ * 
+ * @author bhoward
+ */
 public class UnaryOperation extends AbstractASTNode implements Expression {
 	private final OpType operator;
 	private final Expression expression;
 
+	/**
+	 * Construct a UnaryOperation ast node starting at the given source Position,
+	 * with the specified subexpression and operator type.
+	 * 
+	 * @param start
+	 * @param operator
+	 * @param expression
+	 */
 	public UnaryOperation(Position start, OpType operator, Expression expression) {
 		super(start);
 		this.operator = operator;
@@ -26,6 +39,12 @@ public class UnaryOperation extends AbstractASTNode implements Expression {
 		visitor.visit(this);
 	}
 
+	/**
+	 * Define the allowable unary operators. Not to be confused with the
+	 * similarly-named TokenTypes.
+	 * 
+	 * @author bhoward
+	 */
 	public enum OpType {
 		PLUS, MINUS
 	}

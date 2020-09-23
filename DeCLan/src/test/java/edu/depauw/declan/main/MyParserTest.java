@@ -15,9 +15,9 @@ import edu.depauw.declan.common.ErrorLog;
 import edu.depauw.declan.common.Lexer;
 import edu.depauw.declan.common.ParseException;
 import edu.depauw.declan.common.Parser;
-import edu.depauw.declan.common.PostfixPrintVisitor;
 import edu.depauw.declan.common.ReaderSource;
 import edu.depauw.declan.common.Source;
+import edu.depauw.declan.common.ast.PostfixPrintVisitor;
 import edu.depauw.declan.common.ast.Program;
 import edu.depauw.declan.model.ReferenceLexer;
 import edu.depauw.declan.model.ReferenceParser;
@@ -60,6 +60,14 @@ class MyParserTest {
 		compareToModel(input);
 	}
 
+	/**
+	 * Run the same input through both MyParser and the ReferenceParser (provided in
+	 * the .jar file in the libs folder). Assertions check that they produce the
+	 * same output when traversed by the PostfixPrintVisitor, as well as the same
+	 * error messages (if any).
+	 * 
+	 * @param input
+	 */
 	private void compareToModel(String input) {
 		Source mySource = new ReaderSource(new StringReader(input));
 		Source modelSource = new ReaderSource(new StringReader(input));

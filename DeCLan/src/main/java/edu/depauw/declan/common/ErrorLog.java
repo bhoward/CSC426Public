@@ -6,22 +6,35 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 /**
- * An ErrorLog accumulates error messages and their corresponding positions while compiling.
- * Errors may be retrieved in order by source position.
+ * An ErrorLog accumulates error messages and their corresponding positions
+ * while compiling. Errors may be retrieved in order by source position.
  * 
  * @author bhoward
  */
 public class ErrorLog implements Iterable<ErrorLog.LogItem> {
 	private SortedSet<LogItem> items = new TreeSet<>();
-	
+
+	/**
+	 * Add an error message associated with the given source position to the log.
+	 * 
+	 * @param message
+	 * @param position
+	 */
 	public void add(String message, Position position) {
 		items.add(new LogItem(message, position));
 	}
 
+	@Override
 	public Iterator<LogItem> iterator() {
 		return items.iterator();
 	}
-	
+
+	/**
+	 * A LogItem encapsulates an error message and its corresponding source
+	 * position. LogItems may be sorted by position.
+	 * 
+	 * @author bhoward
+	 */
 	public static class LogItem implements Comparable<LogItem> {
 		private String message;
 		private Position position;
@@ -30,11 +43,11 @@ public class ErrorLog implements Iterable<ErrorLog.LogItem> {
 			this.message = message;
 			this.position = position;
 		}
-		
+
 		public String getMessage() {
 			return message;
 		}
-		
+
 		public Position getPosition() {
 			return position;
 		}
@@ -43,7 +56,7 @@ public class ErrorLog implements Iterable<ErrorLog.LogItem> {
 		public String toString() {
 			return "Error: " + message + " at " + position;
 		}
-		
+
 		@Override
 		public int hashCode() {
 			return Objects.hash(message, position);
@@ -61,6 +74,7 @@ public class ErrorLog implements Iterable<ErrorLog.LogItem> {
 			return Objects.equals(message, other.message) && Objects.equals(position, other.position);
 		}
 
+		@Override
 		public int compareTo(LogItem other) {
 			return position.compareTo(other.position);
 		}

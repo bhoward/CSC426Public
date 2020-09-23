@@ -5,7 +5,7 @@ import java.util.Properties;
 import edu.depauw.declan.common.ErrorLog;
 import edu.depauw.declan.common.ParseException;
 import edu.depauw.declan.common.Parser;
-import edu.depauw.declan.common.PostfixPrintVisitor;
+import edu.depauw.declan.common.ast.PostfixPrintVisitor;
 import edu.depauw.declan.common.ast.Program;
 
 /**

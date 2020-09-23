@@ -34,6 +34,7 @@ public class ReaderSource implements Source {
 		advance();
 	}
 
+	@Override
 	public void advance() {
 		if (atEOF)
 			return;
@@ -58,6 +59,7 @@ public class ReaderSource implements Source {
 		}
 	}
 
+	@Override
 	public void close() {
 		try {
 			in.close();
@@ -67,14 +69,17 @@ public class ReaderSource implements Source {
 		}
 	}
 
+	@Override
 	public char current() {
 		return current;
 	}
 
+	@Override
 	public boolean atEOF() {
 		return atEOF;
 	}
 
+	@Override
 	public Position getPosition() {
 		return new Position(line, column);
 	}
