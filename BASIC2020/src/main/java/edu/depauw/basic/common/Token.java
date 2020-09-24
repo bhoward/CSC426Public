@@ -1,9 +1,9 @@
-package edu.depauw.declan.common;
+package edu.depauw.basic.common;
 
 import java.util.Objects;
 
 /**
- * A Token represents one lexical unit of a DeCLan source program. A Token
+ * A Token represents one lexical unit of a BASIC source program. A Token
  * object stores a position (line and column numbers, each starting from 1), a
  * TokenType, and a lexeme (string value -- for the fixed tokens, this would be
  * redundant and should be null, but for identifiers and numbers it specifies
@@ -18,7 +18,7 @@ public class Token {
 
 	/**
 	 * Construct a Token object given its components. This is package-private;
-	 * tokens should be created using the Token static factory methods.
+	 * tokens should be created using the Token static factory methods
 	 * 
 	 * @param line   the line number (starting from 1) where the token was found
 	 * @param column the column number (starting from 1) where the token started
@@ -73,19 +73,6 @@ public class Token {
 	}
 
 	// Static factory methods
-	
-	/**
-	 * Create a Token for a string literal. The lexeme is just the contents of the
-	 * string (without surrounding quotes).
-	 * 
-	 * @param lexeme
-	 * @param line
-	 * @param column
-	 * @return
-	 */
-	public static Token createString(String lexeme, Position position) {
-		return new Token(position, TokenType.STRING, lexeme);
-	}
 
 	/**
 	 * Create a Token for a numeric literal.
