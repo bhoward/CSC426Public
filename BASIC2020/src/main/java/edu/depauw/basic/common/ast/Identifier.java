@@ -30,4 +30,9 @@ public class Identifier extends AbstractASTNode implements Expression {
 	public void accept(ASTVisitor visitor) {
 		visitor.visit(this);
 	}
+
+	@Override
+	public <R> R acceptResult(ExpressionVisitor<R> visitor) {
+		return visitor.visitResult(this);
+	}
 }

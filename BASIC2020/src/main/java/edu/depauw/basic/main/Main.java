@@ -22,7 +22,7 @@ public class Main {
 				+ "30 NEXT\n"
 				+ "40 INPUT X\n"
 				+ "50 IF X=0 THEN GOTO 70\n"
-				+ "60 LET Y=X*(X+1) : PRINT Y : GOTO 50\n"
+				+ "60 LET Y=X*(X+1) : PRINT X, Y : GOTO 40\n"
 				+ "70 GOSUB 90\n"
 				+ "80 END\n"
 				+ "90 IF X=0 THEN PRINT -1 : RETURN\n";
@@ -36,6 +36,7 @@ public class Main {
 		try (Parser parser = config.getParser()) {
 			Program program = parser.parseProgram();
 			program.accept(new PostfixPrintVisitor());
+			program.accept(new InterpreterVisitor());
 		} catch (ParseException pe) {
 			System.err.println(pe.getMessage());
 		}
@@ -43,7 +44,5 @@ public class Main {
 		for (ErrorLog.LogItem item : config.getErrorLog()) {
 			System.err.println(item);
 		}
-
-		System.out.println("DONE");
 	}
 }

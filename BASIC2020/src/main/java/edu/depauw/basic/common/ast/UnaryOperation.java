@@ -39,6 +39,11 @@ public class UnaryOperation extends AbstractASTNode implements Expression {
 		visitor.visit(this);
 	}
 
+	@Override
+	public <R> R acceptResult(ExpressionVisitor<R> visitor) {
+		return visitor.visitResult(this);
+	}
+
 	/**
 	 * Define the allowable unary operators. Not to be confused with the
 	 * similarly-named TokenTypes.

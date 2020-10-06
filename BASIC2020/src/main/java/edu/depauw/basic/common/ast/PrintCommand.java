@@ -1,6 +1,6 @@
 package edu.depauw.basic.common.ast;
 
-import java.util.Collection;
+import java.util.List;
 
 import edu.depauw.basic.common.Position;
 
@@ -11,14 +11,14 @@ import edu.depauw.basic.common.Position;
  * @author bhoward
  */
 public class PrintCommand extends AbstractASTNode implements Command {
-	private final Collection<Expression> expressions;
+	private final List<Expression> expressions;
 
-	public PrintCommand(Position start, Collection<Expression> expressions) {
+	public PrintCommand(Position start, List<Expression> expressions) {
 		super(start);
 		this.expressions = expressions;
 	}
 
-	public Collection<Expression> getExpressions() {
+	public List<Expression> getExpressions() {
 		return expressions;
 	}
 

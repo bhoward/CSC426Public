@@ -1,6 +1,6 @@
 package edu.depauw.basic.common.ast;
 
-import java.util.Collection;
+import java.util.List;
 
 import edu.depauw.basic.common.Position;
 
@@ -12,9 +12,9 @@ import edu.depauw.basic.common.Position;
  */
 public class IfCommand extends AbstractASTNode implements Command {
 	private final Expression test;
-	private final Collection<Command> commands;
+	private final List<Command> commands;
 
-	public IfCommand(Position start, Expression test, Collection<Command> commands) {
+	public IfCommand(Position start, Expression test, List<Command> commands) {
 		super(start);
 		this.test = test;
 		this.commands = commands;
@@ -24,7 +24,7 @@ public class IfCommand extends AbstractASTNode implements Command {
 		return test;
 	}
 
-	public Collection<Command> getCommands() {
+	public List<Command> getCommands() {
 		return commands;
 	}
 

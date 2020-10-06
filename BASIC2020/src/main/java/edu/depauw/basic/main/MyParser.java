@@ -142,7 +142,7 @@ public class MyParser implements Parser {
 
 		Token numTok = match(TokenType.NUM);
 		int lineNumber = Integer.parseInt(numTok.getLexeme());
-		Collection<Command> commands = parseCommands();
+		List<Command> commands = parseCommands();
 		match(TokenType.EOL);
 
 		return new Line(start, lineNumber, commands);
@@ -153,7 +153,7 @@ public class MyParser implements Parser {
 	//
 	// CommandsRest -> COLON Commands
 	// CommandsRest ->
-	private Collection<Command> parseCommands() {
+	private List<Command> parseCommands() {
 		Position start = currentPosition;
 		List<Command> result = new ArrayList<>();
 
@@ -161,7 +161,7 @@ public class MyParser implements Parser {
 			skip();
 			Expression test = parseExpr();
 			match(TokenType.THEN);
-			Collection<Command> commands = parseCommands();
+			List<Command> commands = parseCommands();
 
 			result.add(new IfCommand(start, test, commands));
 		} else {
@@ -174,7 +174,7 @@ public class MyParser implements Parser {
 			}
 		}
 
-		return Collections.unmodifiableCollection(result);
+		return Collections.unmodifiableList(result);
 	}
 
 	// Command -> END
@@ -228,7 +228,7 @@ public class MyParser implements Parser {
 			return new NextCommand(start);
 		} else if (willMatch(TokenType.PRINT)) {
 			skip();
-			Collection<Expression> expressions = parseExprs();
+			List<Expression> expressions = parseExprs();
 			return new PrintCommand(start, expressions);
 		} else if (willMatch(TokenType.RETURN)) {
 			skip();
@@ -243,7 +243,7 @@ public class MyParser implements Parser {
 	//
 	// ExprsRest -> COMMA Expr ExprsRest
 	// ExprsRest ->
-	private Collection<Expression> parseExprs() {
+	private List<Expression> parseExprs() {
 		List<Expression> result = new ArrayList<>();
 
 		Expression expr = parseExpr();
@@ -254,7 +254,7 @@ public class MyParser implements Parser {
 			result.add(expr);
 		}
 
-		return Collections.unmodifiableCollection(result);
+		return Collections.unmodifiableList(result);
 	}
 
 	// Expr -> AExpr ExprRest

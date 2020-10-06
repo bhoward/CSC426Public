@@ -1,6 +1,6 @@
 package edu.depauw.basic.common.ast;
 
-import java.util.Collection;
+import java.util.List;
 
 import edu.depauw.basic.common.Position;
 
@@ -12,9 +12,9 @@ import edu.depauw.basic.common.Position;
  */
 public class Line extends AbstractASTNode {
 	private final int lineNumber;
-	private final Collection<Command> commands;
+	private final List<Command> commands;
 
-	public Line(Position start, int lineNumber, Collection<Command> commands) {
+	public Line(Position start, int lineNumber, List<Command> commands) {
 		super(start);
 		this.lineNumber = lineNumber;
 		this.commands = commands;
@@ -24,7 +24,7 @@ public class Line extends AbstractASTNode {
 		return lineNumber;
 	}
 
-	public Collection<Command> getCommands() {
+	public List<Command> getCommands() {
 		return commands;
 	}
 
