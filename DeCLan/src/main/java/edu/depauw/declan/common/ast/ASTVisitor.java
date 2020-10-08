@@ -13,7 +13,7 @@ public interface ASTVisitor {
 	void visit(Program program);
 
 	// Declarations
-	void visit(ConstDecl constDecl);
+	void visit(ConstDeclaration constDecl);
 
 	// Statements
 	void visit(ProcedureCall procedureCall);

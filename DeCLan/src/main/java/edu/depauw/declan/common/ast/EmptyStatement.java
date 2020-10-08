@@ -25,4 +25,9 @@ public class EmptyStatement extends AbstractASTNode implements Statement {
 	public void accept(ASTVisitor visitor) {
 		visitor.visit(this);
 	}
+
+	@Override
+	public <R> R acceptResult(StatementVisitor<R> visitor) {
+		return visitor.visitResult(this);
+	}
 }

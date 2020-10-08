@@ -45,6 +45,11 @@ public class BinaryOperation extends AbstractASTNode implements Expression {
 		visitor.visit(this);
 	}
 
+	@Override
+	public <R> R acceptResult(ExpressionVisitor<R> visitor) {
+		return visitor.visitResult(this);
+	}
+
 	/**
 	 * Define the allowable binary operators. Not to be confused with the
 	 * similarly-named TokenTypes.

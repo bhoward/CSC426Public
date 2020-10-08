@@ -1,12 +1,12 @@
 package edu.depauw.declan.common.ast;
 
 /**
- * This serves as a common supertype for all of the statement-like ASTNode
+ * This serves as a common supertype for all of the declaration-like ASTNode
  * classes.
  * 
  * @author bhoward
  */
-public interface Statement extends ASTNode {
+public interface Declaration {
 	/**
 	 * Accept a visitor to this node, according to the Visitor pattern, and return a
 	 * result of type R. Each implementing class will dispatch to the appropriate
@@ -16,5 +16,5 @@ public interface Statement extends ASTNode {
 	 * 
 	 * @param visitor
 	 */
-	<R> R acceptResult(StatementVisitor<R> visitor);
+	<R> R acceptResult(DeclarationVisitor<R> visitor);
 }

@@ -40,4 +40,8 @@ public class ProcedureCall extends AbstractASTNode implements Statement {
 		visitor.visit(this);
 	}
 
+	@Override
+	public <R> R acceptResult(StatementVisitor<R> visitor) {
+		return visitor.visitResult(this);
+	}
 }

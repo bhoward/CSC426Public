@@ -39,7 +39,7 @@ public class PostfixPrintVisitor implements ASTVisitor {
 	@Override
 	public void visit(Program program) {
 		// Process all of the constant declarations
-		for (ConstDecl constDecl : program.getConstDecls()) {
+		for (ConstDeclaration constDecl : program.getConstDecls()) {
 			constDecl.accept(this);
 		}
 
@@ -50,7 +50,7 @@ public class PostfixPrintVisitor implements ASTVisitor {
 	}
 
 	@Override
-	public void visit(ConstDecl constDecl) {
+	public void visit(ConstDeclaration constDecl) {
 		// Bind a numeric value to a constant identifier
 		Identifier id = constDecl.getIdentifier();
 		NumValue num = constDecl.getNumber();

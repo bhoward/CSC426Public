@@ -1,7 +1,6 @@
 package edu.depauw.declan.main;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -12,7 +11,7 @@ import edu.depauw.declan.common.Parser;
 import edu.depauw.declan.common.Position;
 import edu.depauw.declan.common.Token;
 import edu.depauw.declan.common.TokenType;
-import edu.depauw.declan.common.ast.ConstDecl;
+import edu.depauw.declan.common.ast.ConstDeclaration;
 import edu.depauw.declan.common.ast.Identifier;
 import edu.depauw.declan.common.ast.NumValue;
 import edu.depauw.declan.common.ast.Program;
@@ -114,9 +113,9 @@ public class MyParser implements Parser {
 	public Program parseProgram() {
 		Position start = currentPosition;
 
-		Collection<ConstDecl> constDecls = parseDeclSequence();
+		List<ConstDeclaration> constDecls = parseDeclSequence();
 		match(TokenType.BEGIN);
-		Collection<Statement> statements = parseStatementSequence();
+		List<Statement> statements = parseStatementSequence();
 		match(TokenType.END);
 		match(TokenType.PERIOD);
 		matchEOF();
@@ -129,15 +128,15 @@ public class MyParser implements Parser {
 	//
 	// ConstDeclSequence -> ConstDecl ; ConstDeclSequence
 	// ConstDeclSequence ->
-	private Collection<ConstDecl> parseDeclSequence() {
-		List<ConstDecl> constDecls = new ArrayList<>();
+	private List<ConstDeclaration> parseDeclSequence() {
+		List<ConstDeclaration> constDecls = new ArrayList<>();
 
 		if (willMatch(TokenType.CONST)) {
 			skip();
 
 			// FIRST(ConstDecl) = ID
 			while (willMatch(TokenType.ID)) {
-				ConstDecl constDecl = parseConstDecl();
+				ConstDeclaration constDecl = parseConstDecl();
 				constDecls.add(constDecl);
 
 				match(TokenType.SEMI);
@@ -145,11 +144,11 @@ public class MyParser implements Parser {
 		}
 
 		// Return a read-only view of the list of ConstDecl objects
-		return Collections.unmodifiableCollection(constDecls);
+		return Collections.unmodifiableList(constDecls);
 	}
 
 	// ConstDecl -> ident = number
-	private ConstDecl parseConstDecl() {
+	private ConstDeclaration parseConstDecl() {
 		Position start = currentPosition;
 
 		Token idTok = match(TokenType.ID);
@@ -160,14 +159,14 @@ public class MyParser implements Parser {
 		Token numTok = match(TokenType.NUM);
 		NumValue num = new NumValue(numTok.getPosition(), numTok.getLexeme());
 
-		return new ConstDecl(start, id, num);
+		return new ConstDeclaration(start, id, num);
 	}
 
 	// StatementSequence -> Statement StatementSequenceRest
 	//
 	// StatementSequenceRest -> ; Statement StatementSequenceRest
 	// StatementSequenceRest ->
-	private Collection<Statement> parseStatementSequence() {
+	private List<Statement> parseStatementSequence() {
 		// TODO Auto-generated method stub
 		return null;
 	}

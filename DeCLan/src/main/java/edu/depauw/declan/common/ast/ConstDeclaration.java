@@ -9,7 +9,7 @@ import edu.depauw.declan.common.Position;
  * 
  * @author bhoward
  */
-public class ConstDecl extends AbstractASTNode {
+public class ConstDeclaration extends AbstractASTNode implements Declaration {
 	private final Identifier identifier;
 	private final NumValue number;
 
@@ -21,7 +21,7 @@ public class ConstDecl extends AbstractASTNode {
 	 * @param identifier
 	 * @param number
 	 */
-	public ConstDecl(Position start, Identifier identifier, NumValue number) {
+	public ConstDeclaration(Position start, Identifier identifier, NumValue number) {
 		super(start);
 		this.identifier = identifier;
 		this.number = number;
@@ -38,5 +38,10 @@ public class ConstDecl extends AbstractASTNode {
 	@Override
 	public void accept(ASTVisitor visitor) {
 		visitor.visit(this);
+	}
+
+	@Override
+	public <R> R acceptResult(DeclarationVisitor<R> visitor) {
+		return visitor.visitResult(this);
 	}
 }

@@ -16,6 +16,8 @@ import edu.depauw.declan.common.Lexer;
 import edu.depauw.declan.common.Parser;
 import edu.depauw.declan.common.ReaderSource;
 import edu.depauw.declan.common.Source;
+import edu.depauw.declan.common.ast.ASTVisitor;
+import edu.depauw.declan.model.ReferenceInterpreter;
 import edu.depauw.declan.model.ReferenceLexer;
 import edu.depauw.declan.model.ReferenceParser;
 
@@ -31,6 +33,7 @@ public class Config {
 	private ErrorLog errorLog;
 	private Lexer lexer;
 	private Parser parser;
+	private ASTVisitor interpreter;
 
 	/**
 	 * Configure using command-line arguments and an empty set of properties.
@@ -50,6 +53,7 @@ public class Config {
 	public Config(String[] args, Properties props) {
 		boolean useModelLexer = lookupBoolean(props, "useModelLexer");
 		boolean useModelParser = lookupBoolean(props, "useModelParser");
+		boolean useModelInterpreter = lookupBoolean(props, "useModelInterpreter");
 		String sourceFile = props.getProperty("sourceFile", "");
 		String demoSource = props.getProperty("demoSource", "");
 
@@ -60,6 +64,7 @@ public class Config {
 		if (argList.contains("--model")) {
 			useModelLexer = true;
 			useModelParser = true;
+			useModelInterpreter = true;
 			argList.remove("--model");
 		}
 
@@ -73,6 +78,12 @@ public class Config {
 		if (argList.contains("--modelParser")) {
 			useModelParser = true;
 			argList.remove("--modelParser");
+		}
+
+		// if args contains --modelInterpreter, use the model interpreter implementation
+		if (argList.contains("--modelInterpreter")) {
+			useModelInterpreter = true;
+			argList.remove("--modelInterpreter");
 		}
 
 		// the first remaining arg, if any, is used as the file name
@@ -115,6 +126,13 @@ public class Config {
 		} else {
 			parser = new MyParser(lexer, errorLog);
 		}
+
+		// Initialize the interpreter
+		if (useModelInterpreter) {
+			interpreter = new ReferenceInterpreter(errorLog);
+		} else {
+			interpreter = new MyInterpreter(errorLog);
+		}
 	}
 
 	private boolean lookupBoolean(Properties props, String key) {
@@ -135,5 +153,9 @@ public class Config {
 
 	public Parser getParser() {
 		return parser;
+	}
+	
+	public ASTVisitor getInterpreter() {
+		return interpreter;
 	}
 }

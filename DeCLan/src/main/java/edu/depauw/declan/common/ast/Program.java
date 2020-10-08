@@ -1,6 +1,7 @@
 package edu.depauw.declan.common.ast;
 
 import java.util.Collection;
+import java.util.List;
 
 import edu.depauw.declan.common.Position;
 
@@ -13,8 +14,8 @@ import edu.depauw.declan.common.Position;
  * @author bhoward
  */
 public class Program extends AbstractASTNode {
-	private final Collection<ConstDecl> constDecls;
-	private final Collection<Statement> statements;
+	private final List<ConstDeclaration> constDecls;
+	private final List<Statement> statements;
 
 	/**
 	 * Construct a Program ast node starting at the given source Position, with the
@@ -26,13 +27,13 @@ public class Program extends AbstractASTNode {
 	 * @param constDecls
 	 * @param statements
 	 */
-	public Program(Position start, Collection<ConstDecl> constDecls, Collection<Statement> statements) {
+	public Program(Position start, List<ConstDeclaration> constDecls, List<Statement> statements) {
 		super(start);
 		this.constDecls = constDecls;
 		this.statements = statements;
 	}
 
-	public Collection<ConstDecl> getConstDecls() {
+	public List<ConstDeclaration> getConstDecls() {
 		return constDecls;
 	}
 
