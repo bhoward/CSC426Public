@@ -19,7 +19,7 @@ public enum TokenType {
 	COMMA, // comma ","
 	EOL, // end-of-line
 	// the rest are reserved words whose lexeme matches their name
-	END, FOR, GOSUB, GOTO, IF, INPUT, LET, NEXT, PRINT, RETURN, THEN, TO;
+	DEF, END, FOR, GOSUB, GOTO, IF, INPUT, LET, NEXT, PRINT, RETURN, THEN, TO;
 
 	public static final Map<String, TokenType> reserved;
 
@@ -29,6 +29,7 @@ public enum TokenType {
 
 	static {
 		reserved = new HashMap<>();
+		addReserved(DEF);
 		addReserved(END);
 		addReserved(FOR);
 		addReserved(GOSUB);

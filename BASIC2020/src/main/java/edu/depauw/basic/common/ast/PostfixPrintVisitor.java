@@ -114,6 +114,24 @@ public class PostfixPrintVisitor implements ASTVisitor {
 	}
 
 	@Override
+	public void visit(FunctionCall functionCall) {
+		// Handle a FunctionCall by printing out the argument in postfix,
+		// then printing a call to the function name
+		functionCall.getArgument().accept(this);
+		String name = functionCall.getFunctionName().getLexeme();
+		out.println("CALL " + name);
+	}
+
+	@Override
+	public void visit(DefCommand defCommand) {
+		String name = defCommand.getName().getLexeme();
+		String param = defCommand.getParam().getLexeme();
+		out.println("DEF " + name + "(" + param + ")");
+		defCommand.getRHS().accept(this);
+		out.println("ENDEF");
+	}
+
+	@Override
 	public void visit(EndCommand endCommand) {
 		out.println("END");
 	}
@@ -170,7 +188,7 @@ public class PostfixPrintVisitor implements ASTVisitor {
 		for (Expression expression : printCommand.getExpressions()) {
 			expression.accept(this);
 		}
-		
+
 		int size = printCommand.getExpressions().size();
 		out.println("PRINT " + size);
 	}

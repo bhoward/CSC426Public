@@ -10,14 +10,23 @@ import java.util.SortedMap;
 import java.util.Stack;
 import java.util.TreeMap;
 
+import edu.depauw.basic.common.Environment;
+import edu.depauw.basic.common.ErrorLog;
 import edu.depauw.basic.common.ast.*;
 
 public class InterpreterVisitor implements ASTVisitor, ExpressionVisitor<Integer> {
+	private ErrorLog errorLog;
 	private SortedMap<Integer, Line> lines = new TreeMap<>();
 	private ProgramPosition currentPosition = null;
 	private Stack<StackItem> stack = new Stack<>();
-	private Map<String, Integer> environment = new HashMap<>();
+//	private Map<String, Integer> environment = new HashMap<>();
+	private Environment environment = new Environment();
+	private Map<String, DefCommand> functions = new HashMap<>();
 	private Scanner in = new Scanner(System.in);
+	
+	public InterpreterVisitor(ErrorLog errorLog) {
+		this.errorLog = errorLog;
+	}
 
 	private interface StackItem {
 		boolean isLoopItem();
@@ -208,6 +217,18 @@ public class InterpreterVisitor implements ASTVisitor, ExpressionVisitor<Integer
 	}
 
 	@Override
+	public void visit(FunctionCall functionCall) {
+		// Not used
+	}
+
+	@Override
+	public void visit(DefCommand defCommand) {
+		// Evaluation means saving a FunctionDef in
+		// the functions symbol table
+		functions.put(defCommand.getName().getLexeme(), defCommand);
+	}
+
+	@Override
 	public void visit(EndCommand endCommand) {
 		// Set a non-existent line number
 		currentPosition = new ProgramPosition(-1);
@@ -368,4 +389,20 @@ public class InterpreterVisitor implements ASTVisitor, ExpressionVisitor<Integer
 		return Integer.valueOf(numValue.getLexeme());
 	}
 
+	@Override
+	public Integer visitResult(FunctionCall functionCall) {
+		// look up function by name, evaluate argument,
+		// temporarily bind value to parameter name, then
+		// evaluate function body in augmented environment
+		String name = functionCall.getFunctionName().getLexeme();
+		DefCommand def = functions.get(name);
+		if (def == null) {
+			errorLog.add("Unknown function " + name, functionCall.getStart());
+		}
+		int value = functionCall.getArgument().acceptResult(this);
+		environment.pushTemporary(def.getParam().getLexeme(), value);
+		int result = def.getRHS().acceptResult(this);
+		environment.popTemporary();
+		return result;
+	}
 }

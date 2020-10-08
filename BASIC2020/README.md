@@ -10,7 +10,8 @@ Commands --> Command1
            | Command COLON Commands
 Command1 --> Command
            | IF Expr THEN Commands
-Command --> END
+Command --> DEF ID LPAR ID RPAR EQ Expr
+          | END
           | LET ID EQ Expr
           | GOTO NUM
           | GOSUB NUM
@@ -29,6 +30,7 @@ MExpr --> Factor
         | MExpr MulOp Factor
 Factor --> NUM
          | ID
+         | ID LPAR Expr RPAR
          | AddOp Factor
          | LPAR Expr RPAR
 RelOp --> EQ | LT GT | LT | GT | LT EQ | GT EQ
@@ -42,11 +44,12 @@ MulOp --> STAR | SLASH
 Program --> EOF                              FIRST = EOF
           | Line Program                     FIRST = NUM
 Line --> NUM Commands EOL
-Commands --> Command CommandsRest            FIRST = END, LET, GOTO, GOSUB, RETURN, FOR, NEXT, PRINT, INPUT
+Commands --> Command CommandsRest            FIRST = DEF, END, LET, GOTO, GOSUB, RETURN, FOR, NEXT, PRINT, INPUT
            | IF Expr THEN Commands           FIRST = IF
 CommandsRest --> ε                           FOLLOW = EOL
                | COLON Commands              FIRST = COLON
-Command --> END                              FIRST = END
+Command --> DEF ID LPAR ID RPAR EQ Expr      FIRST = DEF   // e.g., DEF SQUARE(N) = N * N
+          | END                              FIRST = END
           | LET ID EQ Expr                   FIRST = LET
           | GOTO NUM                         FIRST = GOTO
           | GOSUB NUM                        FIRST = GOSUB
@@ -66,9 +69,11 @@ AExpr --> MExpr
 MExpr --> Factor
         | MExpr MulOp Factor
 Factor --> NUM                               FIRST = NUM
-         | ID                                FIRST = ID
+         | ID FRest                          FIRST = ID
          | UnOp Factor                       FIRST = PLUS, MINUS
          | LPAR Expr RPAR                    FIRST = LPAR
+FRest --> ε                                  FOLLOW = COMMA, EOL, COLON, RPAR, TO, THEN, PLUS, MINUS, STAR, SLASH, EQ, LT, GT
+        | LPAR Expr RPAR                     FIRST = LPAR
 RelOp --> EQ                                 FIRST = EQ
         | LT LTRest                          FIRST = LT
         | GT GTRest                          FIRST = GT

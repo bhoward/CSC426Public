@@ -14,9 +14,11 @@ import edu.depauw.basic.common.Token;
 import edu.depauw.basic.common.TokenType;
 import edu.depauw.basic.common.ast.BinaryOperation;
 import edu.depauw.basic.common.ast.Command;
+import edu.depauw.basic.common.ast.DefCommand;
 import edu.depauw.basic.common.ast.EndCommand;
 import edu.depauw.basic.common.ast.Expression;
 import edu.depauw.basic.common.ast.ForCommand;
+import edu.depauw.basic.common.ast.FunctionCall;
 import edu.depauw.basic.common.ast.GosubCommand;
 import edu.depauw.basic.common.ast.GotoCommand;
 import edu.depauw.basic.common.ast.Identifier;
@@ -177,6 +179,7 @@ public class MyParser implements Parser {
 		return Collections.unmodifiableList(result);
 	}
 
+	// Command -> DEF ID LPAR ID RPAR EQ Expr
 	// Command -> END
 	// Command -> FOR ID EQ Expr TO Expr
 	// Command -> GOSUB NUM
@@ -189,7 +192,18 @@ public class MyParser implements Parser {
 	private Command parseCommand() {
 		Position start = currentPosition;
 
-		if (willMatch(TokenType.END)) {
+		if (willMatch(TokenType.DEF)) {
+			skip();
+			Token nameTok = match(TokenType.ID);
+			Identifier functionName = new Identifier(currentPosition, nameTok.getLexeme());
+			match(TokenType.LPAR);
+			Token paramTok = match(TokenType.ID);
+			Identifier paramName = new Identifier(currentPosition, paramTok.getLexeme());
+			match(TokenType.RPAR);
+			match(TokenType.EQ);
+			Expression expr = parseExpr();
+			return new DefCommand(start, functionName, paramName, expr);
+		} else if (willMatch(TokenType.END)) {
 			skip();
 			return new EndCommand(start);
 		} else if (willMatch(TokenType.FOR)) {
@@ -270,7 +284,7 @@ public class MyParser implements Parser {
 			Expression right = parseAExpr();
 			expr = new BinaryOperation(start, expr, relOp, right);
 		}
-		
+
 		return expr;
 	}
 
@@ -287,7 +301,7 @@ public class MyParser implements Parser {
 			Expression right = parseMExpr();
 			expr = new BinaryOperation(start, expr, addOp, right);
 		}
-		
+
 		return expr;
 	}
 
@@ -297,30 +311,31 @@ public class MyParser implements Parser {
 	// MExprRest ->
 	private Expression parseMExpr() {
 		Position start = currentPosition;
-		
+
 		Expression expr = parseFactor();
 		while (willMatch(TokenType.STAR) || willMatch(TokenType.SLASH)) {
 			BinaryOperation.OpType mulOp = parseMulOp();
 			Expression right = parseFactor();
 			expr = new BinaryOperation(start, expr, mulOp, right);
 		}
-		
+
 		return expr;
 	}
 
 	// Factor -> NUM
-	// Factor -> ID
+	// Factor -> ID FRest
 	// Factor -> UnOp Factor
 	// Factor -> LPAR Expr RPAR
 	private Expression parseFactor() {
 		Position start = currentPosition;
-		
+
 		if (willMatch(TokenType.NUM)) {
 			Token numTok = match(TokenType.NUM);
 			return new NumValue(start, numTok.getLexeme());
 		} else if (willMatch(TokenType.ID)) {
 			Token idTok = match(TokenType.ID);
-			return new Identifier(start, idTok.getLexeme());
+			Identifier id = new Identifier(start, idTok.getLexeme());
+			return parseFRest(id);
 		} else if (willMatch(TokenType.PLUS) || willMatch(TokenType.MINUS)) {
 			UnaryOperation.OpType unOp = parseUnOp();
 			Expression expr = parseFactor();
@@ -330,7 +345,20 @@ public class MyParser implements Parser {
 			Expression expr = parseExpr();
 			match(TokenType.RPAR);
 			return expr;
-		}		
+		}
+	}
+
+	// FRest ->
+	// FRest -> LPAR Expr RPAR
+	private Expression parseFRest(Identifier id) {
+		if (willMatch(TokenType.LPAR)) {
+			skip();
+			Expression expr = parseExpr();
+			match(TokenType.RPAR);
+			return new FunctionCall(id.getStart(), id, expr);
+		} else {
+			return id;
+		}
 	}
 
 	// RelOp -> EQ
@@ -405,4 +433,3 @@ public class MyParser implements Parser {
 		}
 	}
 }
-

@@ -20,9 +20,11 @@ public class Main {
 				  "10 FOR I=1 TO 10\n"
 				+ "20   PRINT I, I*I\n"
 				+ "30 NEXT\n"
+				+ "31 DEF SQUARE(N) = N * N\n"
+				+ "32 DEF F(X) = SQUARE(X) - 17\n"
 				+ "40 INPUT X\n"
 				+ "50 IF X=0 THEN GOTO 70\n"
-				+ "60 LET Y=X*(X+1) : PRINT X, Y : GOTO 40\n"
+				+ "60 LET Y=X*(X+1) : PRINT X, Y, SQUARE(X), F(X) : GOTO 40\n"
 				+ "70 GOSUB 90\n"
 				+ "80 END\n"
 				+ "90 IF X=0 THEN PRINT -1 : RETURN\n";
@@ -36,7 +38,7 @@ public class Main {
 		try (Parser parser = config.getParser()) {
 			Program program = parser.parseProgram();
 			program.accept(new PostfixPrintVisitor());
-			program.accept(new InterpreterVisitor());
+			program.accept(new InterpreterVisitor(config.getErrorLog()));
 		} catch (ParseException pe) {
 			System.err.println(pe.getMessage());
 		}

@@ -23,7 +23,11 @@ public interface ASTVisitor {
 
 	void visit(Identifier identifier);
 
+	void visit(FunctionCall functionCall);
+
 	// Commands
+	void visit(DefCommand defCommand);
+
 	void visit(EndCommand endCommand);
 
 	void visit(ForCommand forCommand);
