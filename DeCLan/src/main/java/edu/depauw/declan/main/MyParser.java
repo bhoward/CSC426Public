@@ -12,6 +12,7 @@ import edu.depauw.declan.common.Position;
 import edu.depauw.declan.common.Token;
 import edu.depauw.declan.common.TokenType;
 import edu.depauw.declan.common.ast.ConstDeclaration;
+import edu.depauw.declan.common.ast.Declaration;
 import edu.depauw.declan.common.ast.Identifier;
 import edu.depauw.declan.common.ast.NumValue;
 import edu.depauw.declan.common.ast.Program;
@@ -113,7 +114,7 @@ public class MyParser implements Parser {
 	public Program parseProgram() {
 		Position start = currentPosition;
 
-		List<ConstDeclaration> constDecls = parseDeclSequence();
+		List<Declaration> constDecls = parseDeclSequence();
 		match(TokenType.BEGIN);
 		List<Statement> statements = parseStatementSequence();
 		match(TokenType.END);
@@ -128,23 +129,23 @@ public class MyParser implements Parser {
 	//
 	// ConstDeclSequence -> ConstDecl ; ConstDeclSequence
 	// ConstDeclSequence ->
-	private List<ConstDeclaration> parseDeclSequence() {
-		List<ConstDeclaration> constDecls = new ArrayList<>();
+	private List<Declaration> parseDeclSequence() {
+		List<Declaration> declarations = new ArrayList<>();
 
 		if (willMatch(TokenType.CONST)) {
 			skip();
 
 			// FIRST(ConstDecl) = ID
 			while (willMatch(TokenType.ID)) {
-				ConstDeclaration constDecl = parseConstDecl();
-				constDecls.add(constDecl);
+				Declaration constDecl = parseConstDecl();
+				declarations.add(constDecl);
 
 				match(TokenType.SEMI);
 			}
 		}
 
-		// Return a read-only view of the list of ConstDecl objects
-		return Collections.unmodifiableList(constDecls);
+		// Return a read-only view of the list of Declaration objects
+		return Collections.unmodifiableList(declarations);
 	}
 
 	// ConstDecl -> ident = number

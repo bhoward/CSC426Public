@@ -38,9 +38,9 @@ public class PostfixPrintVisitor implements ASTVisitor {
 
 	@Override
 	public void visit(Program program) {
-		// Process all of the constant declarations
-		for (ConstDeclaration constDecl : program.getConstDecls()) {
-			constDecl.accept(this);
+		// Process all of the declarations
+		for (Declaration declaration : program.getDeclarations()) {
+			declaration.accept(this);
 		}
 
 		// Process all of the statements in the program body

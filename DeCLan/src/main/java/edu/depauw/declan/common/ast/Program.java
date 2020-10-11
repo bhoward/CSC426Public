@@ -14,7 +14,7 @@ import edu.depauw.declan.common.Position;
  * @author bhoward
  */
 public class Program extends AbstractASTNode {
-	private final List<ConstDeclaration> constDecls;
+	private final List<Declaration> declarations;
 	private final List<Statement> statements;
 
 	/**
@@ -24,17 +24,17 @@ public class Program extends AbstractASTNode {
 	 * Collections.unmodifiableCollection} method) of declarations and statements.
 	 * 
 	 * @param start
-	 * @param constDecls
+	 * @param declarations
 	 * @param statements
 	 */
-	public Program(Position start, List<ConstDeclaration> constDecls, List<Statement> statements) {
+	public Program(Position start, List<Declaration> declarations, List<Statement> statements) {
 		super(start);
-		this.constDecls = constDecls;
+		this.declarations = declarations;
 		this.statements = statements;
 	}
 
-	public List<ConstDeclaration> getConstDecls() {
-		return constDecls;
+	public List<Declaration> getDeclarations() {
+		return declarations;
 	}
 
 	public Collection<Statement> getStatements() {

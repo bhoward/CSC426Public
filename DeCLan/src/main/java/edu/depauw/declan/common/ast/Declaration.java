@@ -6,7 +6,7 @@ package edu.depauw.declan.common.ast;
  * 
  * @author bhoward
  */
-public interface Declaration {
+public interface Declaration extends ASTNode {
 	/**
 	 * Accept a visitor to this node, according to the Visitor pattern, and return a
 	 * result of type R. Each implementing class will dispatch to the appropriate
