@@ -3,8 +3,8 @@ package edu.depauw.declan.common.ast;
 import edu.depauw.declan.common.Position;
 
 /**
- * An ASTNode representing a binary operation (+, -, *, DIV, or MOD currently),
- * with left and right subexpressions and an operator.
+ * An ASTNode representing a binary operation, with left and right
+ * subexpressions and an operator.
  * 
  * @author bhoward
  */
@@ -57,6 +57,6 @@ public class BinaryOperation extends AbstractASTNode implements Expression {
 	 * @author bhoward
 	 */
 	public enum OpType {
-		PLUS, MINUS, TIMES, DIV, MOD
+		PLUS, MINUS, OR, TIMES, DIVIDE, DIV, MOD, AND
 	}
 }

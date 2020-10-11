@@ -51,6 +51,6 @@ public class UnaryOperation extends AbstractASTNode implements Expression {
 	 * @author bhoward
 	 */
 	public enum OpType {
-		PLUS, MINUS
+		PLUS, MINUS, NOT
 	}
 }

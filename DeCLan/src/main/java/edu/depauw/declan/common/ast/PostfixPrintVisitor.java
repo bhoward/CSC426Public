@@ -90,6 +90,9 @@ public class PostfixPrintVisitor implements ASTVisitor {
 		case MINUS:
 			out.println("NEGATE");
 			break;
+		case NOT:
+			out.println("NOT");
+			break;
 		}
 	}
 
@@ -108,14 +111,23 @@ public class PostfixPrintVisitor implements ASTVisitor {
 		case MINUS:
 			out.println("SUBTRACT");
 			break;
+		case OR:
+			out.println("OR");
+			break;
 		case TIMES:
 			out.println("MULTIPLY");
 			break;
-		case DIV:
+		case DIVIDE:
 			out.println("DIVIDE");
 			break;
+		case DIV:
+			out.println("QUOTIENT");
+			break;
 		case MOD:
-			out.println("MODULO");
+			out.println("REMAINDER");
+			break;
+		case AND:
+			out.println("AND");
 			break;
 		}
 	}
