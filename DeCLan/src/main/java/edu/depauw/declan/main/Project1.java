@@ -18,7 +18,7 @@ public class Project1 {
 		String demoSource =
 				  "CONST six = 6; seven = 7;\n"
 				+ "VAR answer : INTEGER;\n"
-				+ "PROCEDURE gcd(a: INTEGER, b: INTEGER): INTEGER;\n"
+				+ "PROCEDURE gcd(a: INTEGER; b: INTEGER): INTEGER;\n"
 				+ "  VAR c : INTEGER;\n"
 				+ "  BEGIN\n"
 				+ "    IF b = 0 THEN c := a\n"
