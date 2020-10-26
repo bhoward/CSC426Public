@@ -2,15 +2,30 @@ package edu.depauw.declan.main;
 
 import edu.depauw.declan.common.ErrorLog;
 import edu.depauw.declan.common.ast.ASTVisitor;
+import edu.depauw.declan.common.ast.Assignment;
 import edu.depauw.declan.common.ast.BinaryOperation;
+import edu.depauw.declan.common.ast.BooleanValue;
 import edu.depauw.declan.common.ast.ConstDeclaration;
 import edu.depauw.declan.common.ast.EmptyStatement;
 import edu.depauw.declan.common.ast.ExpressionVisitor;
+import edu.depauw.declan.common.ast.FPSection;
+import edu.depauw.declan.common.ast.ForStatement;
+import edu.depauw.declan.common.ast.FormalParameters;
+import edu.depauw.declan.common.ast.FunctionCall;
 import edu.depauw.declan.common.ast.Identifier;
+import edu.depauw.declan.common.ast.IfStatement;
 import edu.depauw.declan.common.ast.NumValue;
+import edu.depauw.declan.common.ast.ProcedureBody;
 import edu.depauw.declan.common.ast.ProcedureCall;
+import edu.depauw.declan.common.ast.ProcedureDeclaration;
+import edu.depauw.declan.common.ast.ProcedureHead;
 import edu.depauw.declan.common.ast.Program;
+import edu.depauw.declan.common.ast.RelationalOperation;
+import edu.depauw.declan.common.ast.RepeatStatement;
+import edu.depauw.declan.common.ast.StringValue;
 import edu.depauw.declan.common.ast.UnaryOperation;
+import edu.depauw.declan.common.ast.VarDeclaration;
+import edu.depauw.declan.common.ast.WhileStatement;
 
 public class MyInterpreter implements ASTVisitor, ExpressionVisitor<Integer> {
 	private ErrorLog errorLog;
@@ -46,26 +61,6 @@ public class MyInterpreter implements ASTVisitor, ExpressionVisitor<Integer> {
 	}
 
 	@Override
-	public void visit(UnaryOperation unaryOperation) {
-		// Not used
-	}
-
-	@Override
-	public void visit(BinaryOperation binaryOperation) {
-		// Not used
-	}
-
-	@Override
-	public void visit(NumValue numValue) {
-		// Not used
-	}
-
-	@Override
-	public void visit(Identifier identifier) {
-		// Not used
-	}
-
-	@Override
 	public Integer visitResult(BinaryOperation binaryOperation) {
 		// TODO Auto-generated method stub
 		return null;
@@ -89,4 +84,100 @@ public class MyInterpreter implements ASTVisitor, ExpressionVisitor<Integer> {
 		return null;
 	}
 
+	// The following are unused in Project 3
+	@Override
+	public Integer visitResult(RelationalOperation relationalOperation) {
+		return null;
+	}
+
+	@Override
+	public Integer visitResult(StringValue stringValue) {
+		return null;
+	}
+
+	@Override
+	public Integer visitResult(BooleanValue booleanValue) {
+		return null;
+	}
+
+	@Override
+	public Integer visitResult(FunctionCall functionCall) {
+		return null;
+	}
+
+	@Override
+	public void visit(UnaryOperation unaryOperation) {
+	}
+
+	@Override
+	public void visit(BinaryOperation binaryOperation) {
+	}
+
+	@Override
+	public void visit(NumValue numValue) {
+	}
+
+	@Override
+	public void visit(Identifier identifier) {
+	}
+
+	@Override
+	public void visit(ProcedureHead procedureHead) {
+	}
+
+	@Override
+	public void visit(FormalParameters formalParameters) {
+	}
+
+	@Override
+	public void visit(FPSection fpSection) {
+	}
+
+	@Override
+	public void visit(ProcedureBody procedureBody) {
+	}
+
+	@Override
+	public void visit(VarDeclaration varDeclaration) {
+	}
+
+	@Override
+	public void visit(ProcedureDeclaration procedureDeclaration) {
+	}
+
+	@Override
+	public void visit(Assignment assignment) {
+	}
+
+	@Override
+	public void visit(IfStatement ifStatement) {
+	}
+
+	@Override
+	public void visit(WhileStatement whileStatement) {
+	}
+
+	@Override
+	public void visit(RepeatStatement repeatStatement) {
+	}
+
+	@Override
+	public void visit(ForStatement forStatement) {
+	}
+
+	@Override
+	public void visit(RelationalOperation relationalOperation) {
+	}
+
+	@Override
+	public void visit(StringValue stringValue) {
+	}
+
+	@Override
+	public void visit(BooleanValue booleanValue) {
+	}
+
+	@Override
+	public void visit(FunctionCall functionCall) {
+	}
 }

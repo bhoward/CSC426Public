@@ -4,35 +4,34 @@ import edu.depauw.declan.common.Position;
 
 /**
  * An ASTNode representing a CONST declaration. It contains the Identifier being
- * declared plus the constant value (currently just a NumValue) being bound to
- * it.
+ * declared plus the constant expression being bound to it.
  * 
  * @author bhoward
  */
 public class ConstDeclaration extends AbstractASTNode implements Declaration {
 	private final Identifier identifier;
-	private final NumValue number;
+	private final Expression value;
 
 	/**
 	 * Construct a ConstDecl ast node starting at the given source position, with
-	 * the specified Identifier and NumValue.
+	 * the specified Identifier and Expression.
 	 * 
 	 * @param start
 	 * @param identifier
-	 * @param number
+	 * @param value
 	 */
-	public ConstDeclaration(Position start, Identifier identifier, NumValue number) {
+	public ConstDeclaration(Position start, Identifier identifier, Expression value) {
 		super(start);
 		this.identifier = identifier;
-		this.number = number;
+		this.value = value;
 	}
 
 	public Identifier getIdentifier() {
 		return identifier;
 	}
 
-	public NumValue getNumber() {
-		return number;
+	public Expression getValue() {
+		return value;
 	}
 
 	@Override

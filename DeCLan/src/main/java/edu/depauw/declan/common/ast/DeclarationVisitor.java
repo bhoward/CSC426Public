@@ -13,4 +13,8 @@ package edu.depauw.declan.common.ast;
 public interface DeclarationVisitor<R> {
 	R visitResult(ConstDeclaration constDeclaration);
 
+	R visitResult(VarDeclaration varDeclaration);
+	
+	R visitResult(ProcedureDeclaration procedureDeclaration);
+
 }

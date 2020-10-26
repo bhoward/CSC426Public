@@ -12,15 +12,39 @@ package edu.depauw.declan.common.ast;
 public interface ASTVisitor {
 	void visit(Program program);
 
+	void visit(ProcedureHead procedureHead);
+
+	void visit(FormalParameters formalParameters);
+
+	void visit(FPSection fpSection);
+
+	void visit(ProcedureBody procedureBody);
+
 	// Declarations
 	void visit(ConstDeclaration constDecl);
+
+	void visit(VarDeclaration varDeclaration);
+
+	void visit(ProcedureDeclaration procedureDeclaration);
 
 	// Statements
 	void visit(ProcedureCall procedureCall);
 
+	void visit(Assignment assignment);
+
+	void visit(IfStatement ifStatement);
+
+	void visit(WhileStatement whileStatement);
+
+	void visit(RepeatStatement repeatStatement);
+
+	void visit(ForStatement forStatement);
+
 	void visit(EmptyStatement emptyStatement);
 
 	// Expressions
+	void visit(RelationalOperation relationalOperation);
+
 	void visit(UnaryOperation unaryOperation);
 
 	void visit(BinaryOperation binaryOperation);
@@ -28,4 +52,10 @@ public interface ASTVisitor {
 	void visit(NumValue numValue);
 
 	void visit(Identifier identifier);
+
+	void visit(StringValue stringValue);
+
+	void visit(BooleanValue booleanValue);
+
+	void visit(FunctionCall functionCall);
 }

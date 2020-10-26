@@ -18,4 +18,12 @@ public interface ExpressionVisitor<R> {
 	R visitResult(Identifier identifier);
 
 	R visitResult(NumValue numValue);
+
+	R visitResult(RelationalOperation relationalOperation);
+
+	R visitResult(StringValue stringValue);
+
+	R visitResult(BooleanValue booleanValue);
+
+	R visitResult(FunctionCall functionCall);
 }

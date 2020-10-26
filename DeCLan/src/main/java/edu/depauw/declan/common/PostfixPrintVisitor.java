@@ -1,8 +1,36 @@
-package edu.depauw.declan.common.ast;
+package edu.depauw.declan.common;
 
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
+
+import edu.depauw.declan.common.ast.ASTVisitor;
+import edu.depauw.declan.common.ast.Assignment;
+import edu.depauw.declan.common.ast.BinaryOperation;
+import edu.depauw.declan.common.ast.BooleanValue;
+import edu.depauw.declan.common.ast.ConstDeclaration;
+import edu.depauw.declan.common.ast.Declaration;
+import edu.depauw.declan.common.ast.EmptyStatement;
+import edu.depauw.declan.common.ast.Expression;
+import edu.depauw.declan.common.ast.FPSection;
+import edu.depauw.declan.common.ast.ForStatement;
+import edu.depauw.declan.common.ast.FormalParameters;
+import edu.depauw.declan.common.ast.FunctionCall;
+import edu.depauw.declan.common.ast.Identifier;
+import edu.depauw.declan.common.ast.IfStatement;
+import edu.depauw.declan.common.ast.NumValue;
+import edu.depauw.declan.common.ast.ProcedureBody;
+import edu.depauw.declan.common.ast.ProcedureCall;
+import edu.depauw.declan.common.ast.ProcedureDeclaration;
+import edu.depauw.declan.common.ast.ProcedureHead;
+import edu.depauw.declan.common.ast.Program;
+import edu.depauw.declan.common.ast.RelationalOperation;
+import edu.depauw.declan.common.ast.RepeatStatement;
+import edu.depauw.declan.common.ast.Statement;
+import edu.depauw.declan.common.ast.StringValue;
+import edu.depauw.declan.common.ast.UnaryOperation;
+import edu.depauw.declan.common.ast.VarDeclaration;
+import edu.depauw.declan.common.ast.WhileStatement;
 
 /**
  * This is an implementation of the ASTVisitor that encapsulates the algorithm
@@ -53,7 +81,7 @@ public class PostfixPrintVisitor implements ASTVisitor {
 	public void visit(ConstDeclaration constDecl) {
 		// Bind a numeric value to a constant identifier
 		Identifier id = constDecl.getIdentifier();
-		NumValue num = constDecl.getNumber();
+		NumValue num = (NumValue) constDecl.getValue(); // In Project 2, must be a NumValue
 
 		environment.put(id.getLexeme(), num.getLexeme());
 	}
@@ -64,7 +92,8 @@ public class PostfixPrintVisitor implements ASTVisitor {
 		// takes a single INTEGER argument. The output first prints out the
 		// argument in postfix, and then prints the "PRINT" instruction.
 		if (procedureCall.getProcedureName().getLexeme().equals("PrintInt")) {
-			procedureCall.getArgument().accept(this);
+			Expression argument = procedureCall.getArguments().get().get(0); // assume there is exactly one argument
+			argument.accept(this);
 			out.println("PRINT");
 		} else {
 			// Ignore all other procedure calls
@@ -146,5 +175,96 @@ public class PostfixPrintVisitor implements ASTVisitor {
 		// identifier has not been declared.
 		String value = environment.getOrDefault(identifier.getLexeme(), "0");
 		out.println(value);
+	}
+
+	// The following methods are not used in Project 2
+	@Override
+	public void visit(ProcedureHead procedureHead) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(FormalParameters formalParameters) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(FPSection fpSection) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(ProcedureBody procedureBody) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(VarDeclaration varDeclaration) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(ProcedureDeclaration procedureDeclaration) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(Assignment assignment) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(IfStatement ifStatement) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(WhileStatement whileStatement) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(RepeatStatement repeatStatement) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(ForStatement forStatement) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(RelationalOperation relationalOperation) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(StringValue stringValue) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(BooleanValue booleanValue) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(FunctionCall functionCall) {
+		// TODO Auto-generated method stub
+		
 	}
 }

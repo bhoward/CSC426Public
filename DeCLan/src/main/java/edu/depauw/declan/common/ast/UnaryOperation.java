@@ -3,8 +3,8 @@ package edu.depauw.declan.common.ast;
 import edu.depauw.declan.common.Position;
 
 /**
- * An ASTNode representing a unary operation (+ or -, currently), with a single
- * subexpression and an operator.
+ * An ASTNode representing a unary operation (+, -, or logical negation), with a
+ * single subexpression and an operator.
  * 
  * @author bhoward
  */

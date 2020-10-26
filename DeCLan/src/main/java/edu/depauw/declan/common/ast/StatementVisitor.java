@@ -14,4 +14,14 @@ public interface StatementVisitor<R> {
 	R visitResult(EmptyStatement emptyStatement);
 
 	R visitResult(ProcedureCall procedureCall);
+
+	R visitResult(Assignment assignment);
+
+	R visitResult(IfStatement ifStatement);
+
+	R visitResult(WhileStatement whileStatement);
+
+	R visitResult(RepeatStatement repeatStatement);
+
+	R visitResult(ForStatement forStatement);
 }
