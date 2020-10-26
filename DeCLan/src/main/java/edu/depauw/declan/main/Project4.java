@@ -48,7 +48,7 @@ public class Project4 {
 		Properties props = new Properties();
 		props.setProperty("useModelLexer", "true");
 		props.setProperty("useModelParser", "true");
-		props.setProperty("useModelInterpreter", "false");
+		props.setProperty("useFullParser", "true");
 		props.setProperty("sourceFile", "");
 		props.setProperty("demoSource", demoSource);
 

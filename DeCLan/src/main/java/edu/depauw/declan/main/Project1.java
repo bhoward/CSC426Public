@@ -16,8 +16,10 @@ import edu.depauw.declan.common.Token;
 public class Project1 {
 	public static void main(String[] args) {
 		String demoSource =
-				  "CONST six = 6; seven = 7;\n"
+				  "(* Declare some constants and a global variable *)\n"
+				+ "CONST six = 6; seven = 7;\n"
 				+ "VAR answer : INTEGER;\n"
+				+ "(* Define a function *)\n"
 				+ "PROCEDURE gcd(a: INTEGER; b: INTEGER): INTEGER;\n"
 				+ "  VAR c : INTEGER;\n"
 				+ "  BEGIN\n"
@@ -26,6 +28,7 @@ public class Project1 {
 				+ "    END;\n"
 				+ "    RETURN c\n"
 				+ "  END gcd;\n"
+				+ "(*********** Main Program ***********)\n"
 				+ "BEGIN\n"
 				+ "  answer := six * seven * gcd(six, seven);\n"
 				+ "  PrintString(\"The answer is \");\n"
@@ -35,7 +38,6 @@ public class Project1 {
 
 		Properties props = new Properties();
 		props.setProperty("useModelLexer", "false");
-		props.setProperty("useModelParser", "true");
 		props.setProperty("sourceFile", "");
 		props.setProperty("demoSource", demoSource);
 		

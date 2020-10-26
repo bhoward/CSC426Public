@@ -1,8 +1,8 @@
 package edu.depauw.declan.main;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.StringReader;
 import java.util.Iterator;
@@ -33,18 +33,18 @@ public class LexerTestUtil {
 		try (Lexer myLexer = new MyLexer(mySource, myErrorLog);
 			 Lexer modelLexer = new ReferenceLexer(modelSource, modelErrorLog)) {
 			while (modelLexer.hasNext()) {
-				assertTrue(myLexer.hasNext(), "Not enough tokens");
+				assertTrue("Not enough tokens", myLexer.hasNext());
 				assertEquals(modelLexer.next(), myLexer.next());
 			}
-			assertFalse(myLexer.hasNext(), "Too many tokens");
+			assertFalse("Too many tokens", myLexer.hasNext());
 		}
 
 		Iterator<ErrorLog.LogItem> myItems = myErrorLog.iterator();
 		for (ErrorLog.LogItem item : modelErrorLog) {
-			assertTrue(myItems.hasNext(), "Not enough error items");
+			assertTrue("Not enough error items", myItems.hasNext());
 			assertEquals(item, myItems.next());
 		}
-		assertFalse(myItems.hasNext(), "Too many error items");
+		assertFalse("Too many error items", myItems.hasNext());
 	}
 
 }
