@@ -56,6 +56,4 @@ public interface ASTVisitor {
 	void visit(StringValue stringValue);
 
 	void visit(BooleanValue booleanValue);
-
-	void visit(FunctionCall functionCall);
 }

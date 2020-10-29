@@ -1,31 +1,27 @@
 package edu.depauw.declan.common.ast;
 
-import java.util.Optional;
-
 import edu.depauw.declan.common.Position;
 
 /**
  * An ASTNode representing the head, or "signature", of a PROCEDURE declaration,
- * consisting of an Identifier giving the procedure name and an optional
- * FormalParameters object. If the FormalParameters are not given, then the
- * procedure is a "proper" (statement-level) procedure that will be called with
- * no arguments in parentheses.
+ * consisting of an Identifier giving the procedure name and a FormalParameters
+ * object. For this subset of DeCLan, the formal parameters are not optional.
  * 
  * @author bhoward
  */
 public class ProcedureHead extends AbstractASTNode {
 	private final Identifier id;
-	private final Optional<FormalParameters> formalParameters;
+	private final FormalParameters formalParameters;
 
 	/**
 	 * Construct a ProcedureHead ast node starting at the specified Position, with
-	 * the given procedure name and optional formal parameters.
+	 * the given procedure name and formal parameters.
 	 * 
 	 * @param start
 	 * @param id
 	 * @param formalParameters
 	 */
-	public ProcedureHead(Position start, Identifier id, Optional<FormalParameters> formalParameters) {
+	public ProcedureHead(Position start, Identifier id, FormalParameters formalParameters) {
 		super(start);
 		this.id = id;
 		this.formalParameters = formalParameters;
@@ -35,7 +31,7 @@ public class ProcedureHead extends AbstractASTNode {
 		return id;
 	}
 
-	public Optional<FormalParameters> getFormalParameters() {
+	public FormalParameters getFormalParameters() {
 		return formalParameters;
 	}
 

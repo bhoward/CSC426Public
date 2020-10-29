@@ -53,7 +53,6 @@ public class Config {
 	public Config(String[] args, Properties props) {
 		boolean useModelLexer = lookupBoolean(props, "useModelLexer");
 		boolean useModelParser = lookupBoolean(props, "useModelParser");
-		boolean useFullParser = lookupBoolean(props, "useFullParser");
 		boolean useModelInterpreter = lookupBoolean(props, "useModelInterpreter");
 		String sourceFile = props.getProperty("sourceFile", "");
 		String demoSource = props.getProperty("demoSource", "");
@@ -87,12 +86,6 @@ public class Config {
 			argList.remove("--modelInterpreter");
 		}
 		
-		// if args contains --fullParser, use a parser for the full language
-		if (argList.contains("--fullParser")) {
-			useFullParser = true;
-			argList.remove("--fullParser");
-		}
-
 		// the first remaining arg, if any, is used as the file name
 		// if "-", use standard input
 		// if none, use the demo source
@@ -129,7 +122,7 @@ public class Config {
 
 		// Initialize the parser
 		if (useModelParser) {
-			parser = new ReferenceParser(lexer, errorLog, useFullParser);
+			parser = new ReferenceParser(lexer, errorLog);
 		} else {
 			parser = new MyParser(lexer, errorLog);
 		}

@@ -21,38 +21,30 @@ public class Project5 {
 				  "(* Declare some constants and a global variable *)\n"
 				+ "CONST six = 6; seven = 7;\n"
 				+ "VAR answer : INTEGER;\n"
-				+ "(* Define a function *)\n"
-				+ "PROCEDURE gcd(a: INTEGER; b: INTEGER): INTEGER;\n"
-				+ "  VAR c : INTEGER;\n"
-				+ "  BEGIN\n"
-				+ "    IF b = 0 THEN c := a\n"
-				+ "    ELSE c := gcd(b, a DIV b)\n"
-				+ "    END;\n"
-				+ "    RETURN c\n"
-				+ "  END gcd;\n"
 				+ "(* Define a proper procedure *)\n"
-				+ "PROCEDURE Display(VAR answer: INTEGER; a, b: INTEGER);\n"
-				+ "  VAR i : INTEGER;\n"
+				+ "PROCEDURE Display(answer: INTEGER; a, b: INTEGER; x: REAL);\n"
+				+ "  VAR i, j : INTEGER;\n"
 				+ "  BEGIN\n"
+				+ "    j := answer;\n"
 				+ "    FOR i := a TO b BY -1 DO\n"
-				+ "      PrintInt(answer); PrintLn;\n"
-				+ "      WHILE answer > i DO answer := answer - 1\n"
-				+ "      ELSIF answer < i DO answer := answer + 1\n"
+				+ "      PrintInt(j); PrintLn();\n"
+				+ "      WHILE j > i DO j := j - 1\n"
+				+ "      ELSIF j < i DO j := j + 1\n"
 				+ "      END\n"
-				+ "    END\n"
+				+ "    END;\n"
+				+ "    PrintReal(x); PrintLn()"
 				+ "  END Display;\n"
 				+ "(*********** Main Program ***********)\n"
 				+ "BEGIN\n"
-				+ "  answer := six * seven * gcd(six, seven);\n"
+				+ "  answer := six * seven;\n"
 				+ "  PrintString(\"The answer is \");\n"
-				+ "  Display(answer, seven, six);\n"
-				+ "  PrintInt(answer); PrintLn;\n"
+				+ "  Display(answer, seven, six, 3.14159265);\n"
+				+ "  PrintInt(answer); PrintLn();\n"
 				+ "END.\n";
 
 		Properties props = new Properties();
 		props.setProperty("useModelLexer", "true");
 		props.setProperty("useModelParser", "true");
-		props.setProperty("useFullParser", "true");
 		props.setProperty("sourceFile", "");
 		props.setProperty("demoSource", demoSource);
 

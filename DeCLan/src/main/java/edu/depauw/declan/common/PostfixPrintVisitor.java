@@ -15,7 +15,6 @@ import edu.depauw.declan.common.ast.Expression;
 import edu.depauw.declan.common.ast.FPSection;
 import edu.depauw.declan.common.ast.ForStatement;
 import edu.depauw.declan.common.ast.FormalParameters;
-import edu.depauw.declan.common.ast.FunctionCall;
 import edu.depauw.declan.common.ast.Identifier;
 import edu.depauw.declan.common.ast.IfStatement;
 import edu.depauw.declan.common.ast.NumValue;
@@ -92,7 +91,7 @@ public class PostfixPrintVisitor implements ASTVisitor {
 		// takes a single INTEGER argument. The output first prints out the
 		// argument in postfix, and then prints the "PRINT" instruction.
 		if (procedureCall.getProcedureName().getLexeme().equals("PrintInt")) {
-			Expression argument = procedureCall.getArguments().get().get(0); // assume there is exactly one argument
+			Expression argument = procedureCall.getArguments().get(0); // assume there is exactly one argument
 			argument.accept(this);
 			out.println("PRINT");
 		} else {
@@ -258,12 +257,6 @@ public class PostfixPrintVisitor implements ASTVisitor {
 
 	@Override
 	public void visit(BooleanValue booleanValue) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void visit(FunctionCall functionCall) {
 		// TODO Auto-generated method stub
 		
 	}

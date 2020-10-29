@@ -11,7 +11,6 @@ import edu.depauw.declan.common.ast.ExpressionVisitor;
 import edu.depauw.declan.common.ast.FPSection;
 import edu.depauw.declan.common.ast.ForStatement;
 import edu.depauw.declan.common.ast.FormalParameters;
-import edu.depauw.declan.common.ast.FunctionCall;
 import edu.depauw.declan.common.ast.Identifier;
 import edu.depauw.declan.common.ast.IfStatement;
 import edu.depauw.declan.common.ast.NumValue;
@@ -101,11 +100,6 @@ public class MyInterpreter implements ASTVisitor, ExpressionVisitor<Integer> {
 	}
 
 	@Override
-	public Integer visitResult(FunctionCall functionCall) {
-		return null;
-	}
-
-	@Override
 	public void visit(UnaryOperation unaryOperation) {
 	}
 
@@ -175,9 +169,5 @@ public class MyInterpreter implements ASTVisitor, ExpressionVisitor<Integer> {
 
 	@Override
 	public void visit(BooleanValue booleanValue) {
-	}
-
-	@Override
-	public void visit(FunctionCall functionCall) {
 	}
 }

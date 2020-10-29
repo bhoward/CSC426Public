@@ -24,6 +24,4 @@ public interface ExpressionVisitor<R> {
 	R visitResult(StringValue stringValue);
 
 	R visitResult(BooleanValue booleanValue);
-
-	R visitResult(FunctionCall functionCall);
 }
