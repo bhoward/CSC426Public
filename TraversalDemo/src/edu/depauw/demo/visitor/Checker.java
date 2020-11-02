@@ -107,7 +107,7 @@ public class Checker implements StatementVisitor<Void, Void>, ExpressionVisitor<
 		return null;
 	}
 	
-	private void check(Type expected, Type actual) {
+	private static void check(Type expected, Type actual) {
 		if (expected != actual) {
 			throw new RuntimeException("Type mismatch: expected " + expected + ", found " + actual);
 		}

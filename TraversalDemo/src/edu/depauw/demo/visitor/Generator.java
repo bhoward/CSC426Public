@@ -17,13 +17,13 @@ import edu.depauw.demo.visitor.ast.*;
 public class Generator implements StatementVisitor<Void, List<ICode>>, ExpressionVisitor<String, List<ICode>> {
 	private Map<String, String> symtab;
 	
-	private int sequenceNumber = 0;
+	private static int sequenceNumber = 0;
 	
-	private String newvar() {
+	private static String newvar() {
 		return newvar("t");
 	}
 	
-	private String newvar(String prefix) {
+	private static String newvar(String prefix) {
 		sequenceNumber++;
 		return prefix + sequenceNumber;
 	}
