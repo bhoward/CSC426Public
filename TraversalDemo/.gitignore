@@ -1,1 +1,6 @@
+.metals/
+.bloop/
+.ammonite/
+metals.sbt
 /bin/
+**/target
