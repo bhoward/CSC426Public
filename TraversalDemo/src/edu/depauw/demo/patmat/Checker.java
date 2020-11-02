@@ -27,24 +27,24 @@ public class Checker {
 	private static void typecheck(Statement stmt, Map<String, Type> symtab) {
 		if (stmt instanceof Decl) {
 			Decl decl = (Decl) stmt;
-			String lex = decl.getId().getLexeme();
+			String lexeme = decl.getId().getLexeme();
 			Type type = decl.getType();
 
-			if (symtab.containsKey(lex)) {
-				throw new RuntimeException("Variable " + lex + " already declared");
+			if (symtab.containsKey(lexeme)) {
+				throw new RuntimeException("Variable " + lexeme + " already declared");
 			} else {
-				symtab.put(lex, type);
+				symtab.put(lexeme, type);
 			}
 		} else if (stmt instanceof Assign) {
 			Assign assign = (Assign) stmt;
-			String lex = assign.getLhs().getLexeme();
+			String lexeme = assign.getLhs().getLexeme();
 			Expression rhs = assign.getRhs();
 
-			if (symtab.containsKey(lex)) {
+			if (symtab.containsKey(lexeme)) {
 				typecheck(rhs, symtab);
-				check(symtab.get(lex), rhs.getType());
+				check(symtab.get(lexeme), rhs.getType());
 			} else {
-				throw new RuntimeException("Undefined variable " + lex);
+				throw new RuntimeException("Undefined variable " + lexeme);
 			}
 		} else if (stmt instanceof PrintInt) {
 			PrintInt printInt = (PrintInt) stmt;
@@ -79,21 +79,21 @@ public class Checker {
 			}
 		} else if (expr instanceof Num) {
 			Num num = (Num) expr;
-			String lex = num.getLexeme();
+			String lexeme = num.getLexeme();
 
-			if (lex.contains(".")) {
+			if (lexeme.contains(".")) {
 				num.setType(Type.REAL);
 			} else {
 				num.setType(Type.INT);
 			}
 		} else {
 			Var var = (Var) expr;
-			String lex = var.getLexeme();
+			String lexeme = var.getLexeme();
 
-			if (symtab.containsKey(lex)) {
-				var.setType(symtab.get(lex));
+			if (symtab.containsKey(lexeme)) {
+				var.setType(symtab.get(lexeme));
 			} else {
-				throw new RuntimeException("Unknown variable " + lex);
+				throw new RuntimeException("Unknown variable " + lexeme);
 			}
 		}
 	}

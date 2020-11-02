@@ -22,27 +22,27 @@ public class Checker implements StatementVisitor<Void, Void>, ExpressionVisitor<
 
 	@Override
 	public Void visit(Decl decl, Void t) {
-		String lex = decl.getId().getLexeme();
+		String lexeme = decl.getId().getLexeme();
 		Type type = decl.getType();
 
-		if (symtab.containsKey(lex)) {
-			throw new RuntimeException("Variable " + lex + " already declared");
+		if (symtab.containsKey(lexeme)) {
+			throw new RuntimeException("Variable " + lexeme + " already declared");
 		} else {
-			symtab.put(lex, type);
+			symtab.put(lexeme, type);
 		}
 		return null;
 	}
 
 	@Override
 	public Void visit(Assign assign, Void t) {
-		String lex = assign.getLhs().getLexeme();
+		String lexeme = assign.getLhs().getLexeme();
 		Expression rhs = assign.getRhs();
 
-		if (symtab.containsKey(lex)) {
+		if (symtab.containsKey(lexeme)) {
 			rhs.accept(this, t);
-			check(symtab.get(lex), rhs.getType());
+			check(symtab.get(lexeme), rhs.getType());
 		} else {
-			throw new RuntimeException("Undefined variable " + lex);
+			throw new RuntimeException("Undefined variable " + lexeme);
 		}
 		return null;
 	}
@@ -85,9 +85,9 @@ public class Checker implements StatementVisitor<Void, Void>, ExpressionVisitor<
 
 	@Override
 	public Void visit(Num num, Void t) {
-		String lex = num.getLexeme();
+		String lexeme = num.getLexeme();
 
-		if (lex.contains(".")) {
+		if (lexeme.contains(".")) {
 			num.setType(Type.REAL);
 		} else {
 			num.setType(Type.INT);
@@ -97,12 +97,12 @@ public class Checker implements StatementVisitor<Void, Void>, ExpressionVisitor<
 
 	@Override
 	public Void visit(Var var, Void t) {
-		String lex = var.getLexeme();
+		String lexeme = var.getLexeme();
 
-		if (symtab.containsKey(lex)) {
-			var.setType(symtab.get(lex));
+		if (symtab.containsKey(lexeme)) {
+			var.setType(symtab.get(lexeme));
 		} else {
-			throw new RuntimeException("Unknown variable " + lex);
+			throw new RuntimeException("Unknown variable " + lexeme);
 		}
 		return null;
 	}

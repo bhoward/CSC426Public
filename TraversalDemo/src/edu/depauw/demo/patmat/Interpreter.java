@@ -30,20 +30,20 @@ public class Interpreter {
 	private static void interpret(Statement stmt, Map<String, Value> symtab) {
 		if (stmt instanceof Decl) {
 			Decl decl = (Decl) stmt;
-			String lex = decl.getId().getLexeme();
+			String lexeme = decl.getId().getLexeme();
 			Type type = decl.getType();
 
 			if (type == Type.INT) {
-				symtab.put(lex, new IntValue(0));
+				symtab.put(lexeme, new IntValue(0));
 			} else {
-				symtab.put(lex, new RealValue(0.0));
+				symtab.put(lexeme, new RealValue(0.0));
 			}
 		} else if (stmt instanceof Assign) {
 			Assign assign = (Assign) stmt;
-			String lex = assign.getLhs().getLexeme();
+			String lexeme = assign.getLhs().getLexeme();
 			Expression rhs = assign.getRhs();
 
-			symtab.put(lex, interpret(rhs, symtab));
+			symtab.put(lexeme, interpret(rhs, symtab));
 		} else if (stmt instanceof PrintInt) {
 			PrintInt printInt = (PrintInt) stmt;
 			Expression expr = printInt.getExpr();
@@ -78,21 +78,21 @@ public class Interpreter {
 			}
 		} else if (expr instanceof Num) {
 			Num num = (Num) expr;
-			String lex = num.getLexeme();
+			String lexeme = num.getLexeme();
 
-			if (lex.contains(".")) {
-				return new RealValue(Double.parseDouble(lex));
+			if (lexeme.contains(".")) {
+				return new RealValue(Double.parseDouble(lexeme));
 			} else {
-				return new IntValue(Integer.parseInt(lex));
+				return new IntValue(Integer.parseInt(lexeme));
 			}
 		} else {
 			Var var = (Var) expr;
-			String lex = var.getLexeme();
+			String lexeme = var.getLexeme();
 
-			if (symtab.containsKey(lex)) {
-				return symtab.get(lex);
+			if (symtab.containsKey(lexeme)) {
+				return symtab.get(lexeme);
 			} else {
-				throw new RuntimeException("Unknown variable " + lex);
+				throw new RuntimeException("Unknown variable " + lexeme);
 			}
 		}
 	}

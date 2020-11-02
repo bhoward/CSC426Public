@@ -45,18 +45,18 @@ public class Generator implements StatementVisitor<Void, List<ICode>>, Expressio
 
 	@Override
 	public List<ICode> visit(Decl decl, Void t) {
-		String lex = decl.getId().getLexeme();
+		String lexeme = decl.getId().getLexeme();
 
-		symtab.put(lex, newvar("v"));
+		symtab.put(lexeme, newvar("v"));
 		return Arrays.asList();
 	}
 
 	@Override
 	public List<ICode> visit(Assign assign, Void t) {
-		String lex = assign.getLhs().getLexeme();
+		String lexeme = assign.getLhs().getLexeme();
 		Expression rhs = assign.getRhs();
 
-		String place = symtab.get(lex);
+		String place = symtab.get(lexeme);
 		return rhs.accept(this, place);
 	}
 
@@ -99,15 +99,15 @@ public class Generator implements StatementVisitor<Void, List<ICode>>, Expressio
 
 	@Override
 	public List<ICode> visit(Num num, String place) {
-		String lex = num.getLexeme();
+		String lexeme = num.getLexeme();
 
-		return Arrays.asList(new LetNum(place, lex));
+		return Arrays.asList(new LetNum(place, lexeme));
 	}
 
 	@Override
 	public List<ICode> visit(Var var, String place) {
-		String lex = var.getLexeme();
+		String lexeme = var.getLexeme();
 
-		return Arrays.asList(new LetVar(place, symtab.get(lex)));
+		return Arrays.asList(new LetVar(place, symtab.get(lexeme)));
 	}
 }

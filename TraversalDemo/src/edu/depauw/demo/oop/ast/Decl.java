@@ -28,31 +28,31 @@ public class Decl implements Statement {
 
 	@Override
 	public void interpret(Map<String, Value> symtab) {
-		String lex = id.getLexeme();
+		String lexeme = id.getLexeme();
 		
 		if (type == Type.INT) {
-			symtab.put(lex, new IntValue(0));
+			symtab.put(lexeme, new IntValue(0));
 		} else {
-			symtab.put(lex, new RealValue(0.0));
+			symtab.put(lexeme, new RealValue(0.0));
 		}
 	}
 
 	@Override
 	public void typecheck(Map<String, Type> symtab) {
-		String lex = id.getLexeme();
+		String lexeme = id.getLexeme();
 		
-		if (symtab.containsKey(lex)) {
-			throw new RuntimeException("Variable " + lex + " already declared");
+		if (symtab.containsKey(lexeme)) {
+			throw new RuntimeException("Variable " + lexeme + " already declared");
 		} else {
-			symtab.put(lex, type);
+			symtab.put(lexeme, type);
 		}
 	}
 
 	@Override
 	public List<ICode> generate(Map<String, String> symtab) {
-		String lex = id.getLexeme();
+		String lexeme = id.getLexeme();
 		
-		symtab.put(lex, Generator.newvar("v"));
+		symtab.put(lexeme, Generator.newvar("v"));
 		return Arrays.asList();
 	}
 }

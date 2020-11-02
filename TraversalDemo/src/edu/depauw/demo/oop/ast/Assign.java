@@ -25,28 +25,28 @@ public class Assign implements Statement {
 
 	@Override
 	public void interpret(Map<String, Value> symtab) {
-		String lex = lhs.getLexeme();
+		String lexeme = lhs.getLexeme();
 		
-		symtab.put(lex, rhs.interpret(symtab));
+		symtab.put(lexeme, rhs.interpret(symtab));
 	}
 
 	@Override
 	public void typecheck(Map<String, Type> symtab) {
-		String lex = lhs.getLexeme();
+		String lexeme = lhs.getLexeme();
 		
-		if (symtab.containsKey(lex)) {
+		if (symtab.containsKey(lexeme)) {
 			rhs.typecheck(symtab);
-			Checker.check(symtab.get(lex), rhs.getType());
+			Checker.check(symtab.get(lexeme), rhs.getType());
 		} else {
-			throw new RuntimeException("Undefined variable " + lex);
+			throw new RuntimeException("Undefined variable " + lexeme);
 		}
 	}
 
 	@Override
 	public List<ICode> generate(Map<String, String> symtab) {
-		String lex = lhs.getLexeme();
+		String lexeme = lhs.getLexeme();
 		
-		String place = symtab.get(lex);
+		String place = symtab.get(lexeme);
 		return rhs.generate(symtab, place);
 	}
 }

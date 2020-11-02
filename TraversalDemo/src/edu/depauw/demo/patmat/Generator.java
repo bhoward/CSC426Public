@@ -50,16 +50,16 @@ public class Generator {
 	private static List<ICode> generate(Statement stmt, Map<String, String> symtab) {
 		if (stmt instanceof Decl) {
 			Decl decl = (Decl) stmt;
-			String lex = decl.getId().getLexeme();
+			String lexeme = decl.getId().getLexeme();
 
-			symtab.put(lex, newvar("v"));
+			symtab.put(lexeme, newvar("v"));
 			return Arrays.asList();
 		} else if (stmt instanceof Assign) {
 			Assign assign = (Assign) stmt;
-			String lex = assign.getLhs().getLexeme();
+			String lexeme = assign.getLhs().getLexeme();
 			Expression rhs = assign.getRhs();
 
-			String place = symtab.get(lex);
+			String place = symtab.get(lexeme);
 			return generate(rhs, symtab, place);
 		} else if (stmt instanceof PrintInt) {
 			PrintInt printInt = (PrintInt) stmt;
@@ -98,14 +98,14 @@ public class Generator {
 			return result;
 		} else if (expr instanceof Num) {
 			Num num = (Num) expr;
-			String lex = num.getLexeme();
+			String lexeme = num.getLexeme();
 
-			return Arrays.asList(new LetNum(place, lex));
+			return Arrays.asList(new LetNum(place, lexeme));
 		} else {
 			Var var = (Var) expr;
-			String lex = var.getLexeme();
+			String lexeme = var.getLexeme();
 
-			return Arrays.asList(new LetVar(place, symtab.get(lex)));
+			return Arrays.asList(new LetVar(place, symtab.get(lexeme)));
 		}
 	}
 }
