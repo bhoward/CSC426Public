@@ -4,7 +4,10 @@ object Demo extends App {
     Decl(Var("b"), INT),
     Assign(Var("a"), Num("17")),
     Assign(Var("b"), Add(Var("a"), Num("8"))),
-    PrintInt(Add(Var("a"), Var("b")))
+    PrintInt(Add(Var("a"), Var("b"))),
+    Decl(Var("c"), REAL),
+    Assign(Var("c"), Num("3.0")),
+    PrintReal(Add(Num("0.04"), Add(Num("0.1"), Var("c"))))
   ))
 
   Interpreter.interpret(program)
@@ -15,7 +18,3 @@ object Demo extends App {
 
   println("DONE")
 }
-
-// TODO
-// * comments
-// * summary of pros/cons of each version

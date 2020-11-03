@@ -47,6 +47,27 @@ If either of these type parameters is not needed for a particular visitor, it is
 Note that each branch of the pattern-matching version becomes one `visit` method in an appropriate visitor object.
 Because the types of attributes passed in and out of statement nodes and expression nodes differ, there are separate interfaces to define [`StatementVisitor`](src/main/java/edu/depauw/demo/visitor/ast/StatementVisitor.java) and [`ExpressionVisitor`](src/main/java/edu/depauw/demo/visitor/ast/ExpressionVisitor.java) methods, although in each of the interpreter, typechecker, and code generator cases the same object is used for both kinds of visitor (partly because the visitor is also used to carry around the symbol table).
 
+When the code handling a particular type of AST node needs to operate on another node, it asks that node to `accept` itself as a visitor. The `accept` implementation in each AST node class then delegates the work back to the appropriate `visit` method in the visitor. Therefore, instead of a call such as `generate(expr, symtab, place)`, as seen in the pattern-matching version, we will have `expr.accept(this, place)` (where `this` refers to the current visitor object itself).
+
 ## Plain Object-Oriented Java Version
 
-## Comparison of Advantages and Disadvantages
+The [`edu.depauw.demo.oop`](src/main/java/edu/depauw/demo/oop) and [`edu.depauw.demo.oop.ast`](src/main/java/edu/depauw/demo/oop/ast) packages give a more traditional object-oriented Java implementation.
+Rather than separate the interpreter, typechecker, and code generator from the AST node classes, each operation is spread around as methods defined directly on each class of AST node.
+That is, the code for the `Decl` branch of the interpreter, for example, becomes an `interpret` method on the `Decl` class.
+The example given above, where we would call `generate(expr, symtab, place)` in the pattern-matching version, becomes `expr.generate(symtab, place)`, and the usual object-oriented dispatch finds the appropriate implementation of `generate` based on the actual type of `expr` (whether `Num`, `Var`, or `Add`).
+
+
+## Advantages and Disadvantages of each Version
+
+The pattern-matching and Visitor pattern versions both have the advantage that all of the code for a given phase (interpreter, typechecker, or code generator) is in one place.
+It is easy to add new phases without having to touch any existing code; in particular, the AST classes do not need to be modified, which could be a great advantage if they are automatically created by a parser generator, as is often the case.
+On the other hand, when new classes of AST node are added, perhaps when the language is expanded, each phase's code needs to be reviewed to make sure that all of the cases are covered.
+In the Scala and Visitor versions, the compiler will help with this task by giving a warning or an error if there is a missing case; in the Java implementation of pattern matching, it is easy to miss a case because the compiler does not exhaustively check the `instanceof` tests (in the near future, proper pattern matching may be coming to Java, which has been gradually gaining many of the features already present in Scala).
+
+The plain object-oriented version flips the situation: it is easy to add a new type of AST node without disturbing the rest of the compiler, because all of the code relevant to each type of node is contained in the node class.
+However, this leads to an increase in the complexity of each of the AST classes&mdash;each one has a little bit of each phase of the compiler built into it.
+This makes it much harder to see all of the pieces of a single phase as a unit, and it also means that adding a new phase requires modifying every single AST class.
+
+On the whole, my personal preference is the Scala version (not surprisingly, the Scala language was designed by the person who wrote one of the Java compilers, and it excels at expressing many of the tasks required when writing a compiler).
+If you are using a language without pattern-matching, however, you might find one of the other approaches to be more comfortable.
+Hopefully this overview will help you understand what is going on in each of these traversal styles and choose the style that works best for you.
