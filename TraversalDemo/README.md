@@ -18,4 +18,4 @@ In addition and assignment, all of the types involved must match&mdash;there are
 
 ## Scala Version
 
-The original implementation is written in the hybrid object-functional language [Scala](https://www.scala-lang.org/).
+The [original implementation](src/main/scala) is written in the hybrid object-functional language [Scala](https://www.scala-lang.org/).
