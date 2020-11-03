@@ -26,4 +26,27 @@ The [original implementation](src/main/scala) is written in the Java-compatible 
 
 * [`Checker.scala`](src/main/scala/Checker.scala) performs a pass over the program that is very similar to the interpreter (indeed, typechecking is a form of "abstract interpretation", where the values are types instead of numbers). The structure of the code is almost the same, except the symbol table maps variables to types (see [`Type.scala`](src/main/scala/Type.scala)), and typechecking an expression results in the AST nodes for the parts of the expression being annotated with their types (stored in the mutable `typ` field&mdash;the field is named `typ` instead of `type` because the latter is a keyword in Scala). If any type errors are found, the `sys.error` method is called to immediately print out an error message and halt the program.
 
-* [`Generator.scala`](src/main/scala/Generator.scala) is another interpreter-like function that performs a pattern-matching traversal of the program and returns a list of intermediate code statements (see [`ICode.scala`](src/main/scala/ICode.scala)). The intermediate code is based on the code from [Section 7.3 of the Mogensen text](http://hjemmesider.diku.dk/~torbenm/Basics/basics_lulu2.pdf#section.7.3).
+* [`Generator.scala`](src/main/scala/Generator.scala) is another interpreter-like function that performs a pattern-matching traversal of the program and returns a list of intermediate code statements (see [`ICode.scala`](src/main/scala/ICode.scala)). The intermediate code is based on the code from [Section 7.3 of the Mogensen text](http://hjemmesider.diku.dk/~torbenm/Basics/basics_lulu2.pdf#section.7.3). The symbol table maps each program variable to the corresponding intermediate code variable (which are given names of the form `vn`, where `n` is a positive integer). The `Generator.newvar()` function is also used to create names for temporary storage places (which are given names of the form `tn`, just as in Mogensen).
+
+* [`Demo.scala`](src/main/scala/Demo.scala) is a sample program that creates an AST, then calls the interpreter, typechecker, and code generator in turn, and finally prints out the lines of the generated code.
+
+## Pattern-Matching Java Version
+
+The [`edu.depauw.demo.patmat`](src/main/java/edu/depauw/demo/patmat) and [`edu.depauw.demo.patmat.ast`](src/main/java/edu/depauw/demo/patmat/ast) packages contain a straightforward translation of the Scala version into Java.
+The AST nodes are defined as ordinary classes implementing the `ASTNode`, `Statement`, and `Expression` interfaces, and almost all of the code is devoted to the necessary fields, constructors, and getters.
+The `Expression` classes implement a common `AbstractExpression` base class, which provides the `type` field present in every expression class.
+
+Pattern matching is handled as a series of `if (... instanceof ...)` statements. When a matching branch is found, the node is downcast to the matching type and its fields are extracted into local variables. Beyond that, the code is almost identical to the Scala version.
+
+## Visitor Pattern Java Version
+
+The [`edu.depauw.demo.visitor`](src/main/java/edu/depauw/demo/visitor) and [`edu.depauw.demo.visitor.ast`](src/main/java/edu/depauw/demo/visitor/ast) packages give a corresponding implementation in Java using the Visitor pattern.
+This is actually a slight extension of the Visitor pattern that we have seen before, where each visitor is parameterized by two types: a result type `R` returned by each `visit` method, along with an argument type `T` that specifies an extra argument that is passed in to `visit` (in the terminology of the text, the `T` values are "inherited" attributes being passed down the tree, while the `R` values are "synthesized" attributes being passed back up).
+If either of these type parameters is not needed for a particular visitor, it is specified as `Void`&mdash;this is a Java library class with no implementation, so the only legal value is `null`.
+
+Note that each branch of the pattern-matching version becomes one `visit` method in an appropriate visitor object.
+Because the types of attributes passed in and out of statement nodes and expression nodes differ, there are separate interfaces to define [`StatementVisitor`](src/main/java/edu/depauw/demo/visitor/ast/StatementVisitor.java) and [`ExpressionVisitor`](src/main/java/edu/depauw/demo/visitor/ast/ExpressionVisitor.java) methods, although in each of the interpreter, typechecker, and code generator cases the same object is used for both kinds of visitor (partly because the visitor is also used to carry around the symbol table).
+
+## Plain Object-Oriented Java Version
+
+## Comparison of Advantages and Disadvantages
