@@ -18,4 +18,8 @@ In addition and assignment, all of the types involved must match&mdash;there are
 
 ## Scala Version
 
-The [original implementation](src/main/scala) is written in the hybrid object-functional language [Scala](https://www.scala-lang.org/).
+The [original implementation](src/main/scala) is written in the Java-compatible hybrid object-functional language [Scala](https://www.scala-lang.org/).
+
+* [`ASTNode.scala`](src/main/scala/ASTNode.scala) defines the AST nodes as a series of case classes. The four types of statement extend the `Statement` trait, and the three types of expression extend the `Expression` trait. Scala case classes hide most of the implementation details of creating immutable abstract data types, automatically creating accessors for their fields as well as implementations of methods such as `toString` and `equals`. In addition, they enable pattern matching as a way to simultaneously select an appropriate branch of code for each type of statement or expression, and also bind the relevant field values to local variables in the branch. Note that the `Expression` nodes also contain a mutable field to represent the type, which is not known until after the typechecker has traversed the tree (there are more purely-functional ways to do this, but a little bit of mutability is convenient here).
+
+* [Interpreter.scala](src/main/scala/Interpreter.scala) 
