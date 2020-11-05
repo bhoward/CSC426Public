@@ -46,7 +46,9 @@ DeclSequence -> ProcedureDeclSequence
 ConstDeclSequence -> ConstDecl ; ConstDeclSequence
 ConstDeclSequence ->
 
-ConstDecl -> ident = Expression // may only use idents defined in previous ConstDecls
+ConstDecl -> ident = ConstExpr
+
+ConstExpr -> Expression // but may only use idents defined in previous ConstDecls
 
 VariableDeclSequence -> VariableDecl ; VariableDeclSequence
 VariableDeclSequence ->
