@@ -1,21 +1,23 @@
 package edu.depauw.declan.main;
 
+import java.util.List;
 import java.util.Properties;
 
 import edu.depauw.declan.common.ErrorLog;
 import edu.depauw.declan.common.ParseException;
 import edu.depauw.declan.common.Parser;
-import edu.depauw.declan.common.ast.ASTVisitor;
 import edu.depauw.declan.common.ast.Program;
+import edu.depauw.declan.common.icode.ICode;
 import edu.depauw.declan.model.ReferenceChecker;
+import edu.depauw.declan.model.ReferenceGenerator;
 
 /**
- * Main class for Project 5 -- Typechecker for larger subset of DeCLan (Fall 2020).
- * Parse a program, then check for type errors.
+ * Main class for Project 6 -- Code generator for larger subset of DeCLan (Fall 2020).
+ * Parse a program, check for type errors, then generate intermediate code.
  * 
  * @author bhoward
  */
-public class Project5 {
+public class Project6 {
 	public static void main(String[] args) {
 		String demoSource =
 				  "(* Declare some constants and a global variable *)\n"
@@ -53,9 +55,15 @@ public class Project5 {
 
 		try (Parser parser = config.getParser()) {
 			Program program = parser.parseProgram();
-			// TODO replace the ReferenceChecker with your own visitor object
-			ASTVisitor checker = new ReferenceChecker(config.getErrorLog());
+			ReferenceChecker checker = new ReferenceChecker(config.getErrorLog());
 			program.accept(checker);
+			
+			ReferenceGenerator generator = new ReferenceGenerator(config.getErrorLog(), checker);
+			List<ICode> code = generator.generate(program);
+			
+			for (ICode instr : code) {
+				System.out.println(instr);
+			}
 		} catch (ParseException pe) {
 			System.err.println(pe.getMessage());
 		}
