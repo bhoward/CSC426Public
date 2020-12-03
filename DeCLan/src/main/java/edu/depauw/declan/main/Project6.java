@@ -10,6 +10,7 @@ import edu.depauw.declan.common.ast.Program;
 import edu.depauw.declan.common.icode.ICode;
 import edu.depauw.declan.model.ReferenceChecker;
 import edu.depauw.declan.model.ReferenceGenerator;
+import edu.depauw.declan.model.ReferenceInterpreter;
 
 /**
  * Main class for Project 6 -- Code generator for larger subset of DeCLan (Fall 2020).
@@ -22,27 +23,33 @@ public class Project6 {
 		String demoSource =
 				  "(* Declare some constants and a global variable *)\n"
 				+ "CONST six = 6; seven = 7;\n"
-				+ "VAR answer : INTEGER;\n"
+				+ "VAR answer, temp : INTEGER;\n"
 				+ "(* Define a proper procedure *)\n"
 				+ "PROCEDURE Display(answer: INTEGER; a, b: INTEGER; x: REAL);\n"
-				+ "  VAR i, j : INTEGER;\n"
+				+ "  VAR i, temp : INTEGER;\n"
 				+ "  BEGIN\n"
-				+ "    j := answer;\n"
+				+ "    temp := answer;\n"
 				+ "    FOR i := a TO b BY -1 DO\n"
-				+ "      PrintInt(j); PrintLn();\n"
-				+ "      WHILE j > i DO j := j - 1\n"
-				+ "      ELSIF j < i DO j := j + 1\n"
+				+ "      PrintInt(temp); PrintLn();\n"
+				+ "      WHILE temp > i DO temp := temp - 1\n"
+				+ "      ELSIF temp < i DO temp := temp + 1\n"
 				+ "      END\n"
 				+ "    END;\n"
-				+ "    ASSERT(j = b, \"something went wrong\");\n"
-				+ "    PrintReal(x); PrintLn()\n"
+				+ "    ASSERT(temp = b, \"something went wrong\");\n"
+				+ "    PrintReal(x / 2.); PrintLn()\n"
 				+ "  END Display;\n"
 				+ "(*********** Main Program ***********)\n"
 				+ "BEGIN\n"
-				+ "  answer := six * seven;\n"
+				+ "  answer := 0;\n"
+				+ "  temp := 0;\n"
+				+ "  REPEAT\n"
+				+ "    answer := answer + temp;\n"
+				+ "    temp := temp + seven;\n"
+				+ "  UNTIL answer >= six * seven;\n"
 				+ "  PrintString(\"The answer is \");\n"
 				+ "  Display(answer, seven, six, 3.14159265);\n"
 				+ "  PrintInt(answer); PrintLn();\n"
+				+ "  PrintInt(temp); PrintLn();\n"
 				+ "END.\n";
 
 		Properties props = new Properties();
@@ -55,12 +62,16 @@ public class Project6 {
 
 		try (Parser parser = config.getParser()) {
 			Program program = parser.parseProgram();
+program.accept(new ReferenceInterpreter(config.getErrorLog()));			
+			// Type-check the program, recording discovered type info in the checker object
 			ReferenceChecker checker = new ReferenceChecker(config.getErrorLog());
 			program.accept(checker);
 			
+			// Generate intermediate code assuming the type checker succeeded
 			ReferenceGenerator generator = new ReferenceGenerator(config.getErrorLog(), checker);
 			List<ICode> code = generator.generate(program);
 			
+			// Print out the intermediate code
 			for (ICode instr : code) {
 				System.out.println(instr);
 			}
