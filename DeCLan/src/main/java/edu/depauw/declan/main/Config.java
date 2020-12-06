@@ -11,12 +11,16 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
+import edu.depauw.declan.common.Checker;
 import edu.depauw.declan.common.ErrorLog;
+import edu.depauw.declan.common.Generator;
 import edu.depauw.declan.common.Lexer;
 import edu.depauw.declan.common.Parser;
 import edu.depauw.declan.common.ReaderSource;
 import edu.depauw.declan.common.Source;
 import edu.depauw.declan.common.ast.ASTVisitor;
+import edu.depauw.declan.model.ReferenceChecker;
+import edu.depauw.declan.model.ReferenceGenerator;
 import edu.depauw.declan.model.ReferenceInterpreter;
 import edu.depauw.declan.model.ReferenceLexer;
 import edu.depauw.declan.model.ReferenceParser;
@@ -34,6 +38,8 @@ public class Config {
 	private Lexer lexer;
 	private Parser parser;
 	private ASTVisitor interpreter;
+	private Checker checker;
+	private Generator generator;
 
 	/**
 	 * Configure using command-line arguments and an empty set of properties.
@@ -54,17 +60,21 @@ public class Config {
 		boolean useModelLexer = lookupBoolean(props, "useModelLexer");
 		boolean useModelParser = lookupBoolean(props, "useModelParser");
 		boolean useModelInterpreter = lookupBoolean(props, "useModelInterpreter");
+		boolean useModelChecker = lookupBoolean(props, "useModelChecker");
+		boolean useModelGenerator = lookupBoolean(props, "useModelGenerator");
 		String sourceFile = props.getProperty("sourceFile", "");
 		String demoSource = props.getProperty("demoSource", "");
 
 		List<String> argList = new ArrayList<>();
 		argList.addAll(Arrays.asList(args));
-		
+
 		// if args contains --model, use the model implementations
 		if (argList.contains("--model")) {
 			useModelLexer = true;
 			useModelParser = true;
 			useModelInterpreter = true;
+			useModelChecker = true;
+			useModelGenerator = true;
 			argList.remove("--model");
 		}
 
@@ -85,7 +95,19 @@ public class Config {
 			useModelInterpreter = true;
 			argList.remove("--modelInterpreter");
 		}
-		
+
+		// if args contains --modelChecker, use the model type-checker implementation
+		if (argList.contains("--modelChecker")) {
+			useModelChecker = true;
+			argList.remove("--modelChecker");
+		}
+
+		// if args contains --modelGenerator, use the model code generator implementation
+		if (argList.contains("--modelGenerator")) {
+			useModelGenerator = true;
+			argList.remove("--modelGenerator");
+		}
+
 		// the first remaining arg, if any, is used as the file name
 		// if "-", use standard input
 		// if none, use the demo source
@@ -133,6 +155,20 @@ public class Config {
 		} else {
 			interpreter = new MyInterpreter(errorLog);
 		}
+
+		// Initialize the type-checker
+		if (useModelChecker) {
+			checker = new ReferenceChecker(errorLog);
+		} else {
+			checker = new MyChecker(errorLog);
+		}
+		
+		// Initialize the code generator
+		if (useModelGenerator) {
+			generator = new ReferenceGenerator(errorLog, checker);
+		} else {
+			generator = new MyGenerator(errorLog, checker);
+		}
 	}
 
 	private boolean lookupBoolean(Properties props, String key) {
@@ -154,8 +190,16 @@ public class Config {
 	public Parser getParser() {
 		return parser;
 	}
-	
+
 	public ASTVisitor getInterpreter() {
 		return interpreter;
+	}
+	
+	public Checker getChecker() {
+		return checker;
+	}
+	
+	public Generator getGenerator() {
+		return generator;
 	}
 }
