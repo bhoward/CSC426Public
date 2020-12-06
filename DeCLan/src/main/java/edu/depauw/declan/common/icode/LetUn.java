@@ -1,5 +1,14 @@
 package edu.depauw.declan.common.icode;
 
+/**
+ * Intermediate code statement: place := OP value
+ * 
+ * Computes a unary operation of the value stored at the given location, and
+ * stores the result in location given by place. OP is integer negate (INEG) or
+ * real negate (RNEG).
+ * 
+ * @author bhoward
+ */
 public class LetUn implements ICode {
 	private String place;
 	private Op op;
@@ -10,7 +19,7 @@ public class LetUn implements ICode {
 		this.op = op;
 		this.value = value;
 	}
-	
+
 	@Override
 	public String toString() {
 		return place + " := " + op + " " + value;

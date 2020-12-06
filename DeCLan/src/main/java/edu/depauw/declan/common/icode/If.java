@@ -1,5 +1,13 @@
 package edu.depauw.declan.common.icode;
 
+/**
+ * Intermediate code statement: IF left OP right, ifTrue, ifFalse
+ * 
+ * Compares values at locations left and right. If OP (EQ or GT) is true, branch
+ * to ifTrue label, else branch to ifFalse label.
+ * 
+ * @author bhoward
+ */
 public class If implements ICode {
 	private String left, right, ifTrue, ifFalse;
 	private Op op;
@@ -19,7 +27,7 @@ public class If implements ICode {
 		this.ifTrue = ifTrue;
 		this.ifFalse = ifFalse;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "IF " + left + " " + op + " " + right + ", " + ifTrue + ", " + ifFalse;

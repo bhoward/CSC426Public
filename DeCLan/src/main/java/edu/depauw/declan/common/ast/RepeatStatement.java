@@ -8,7 +8,7 @@ import edu.depauw.declan.common.Position;
  * An ASTNode representing a repeat statement, consisting of a list of
  * statements to be executed at least once in the body of the loop, plus a test
  * expression to be evaluated at the end of each pass to determine whether the
- * loop should be repeated.
+ * loop should be exited (if true) or repeated.
  * 
  * @author bhoward
  */
