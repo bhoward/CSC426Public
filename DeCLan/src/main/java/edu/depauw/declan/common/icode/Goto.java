@@ -18,4 +18,9 @@ public class Goto implements ICode {
 	public String toString() {
 		return "GOTO " + label;
 	}
+
+	@Override
+	public void execute(State state) {
+		state.pc = state.label.get(label);
+	}
 }

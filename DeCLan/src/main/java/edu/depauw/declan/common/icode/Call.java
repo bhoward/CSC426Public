@@ -35,4 +35,22 @@ public class Call implements ICode {
 		sb.append(")");
 		return sb.toString();
 	}
+
+	@Override
+	public void execute(State state) {
+		int p = state.label.getOrDefault(pname, -1);
+		if (p == -1) {
+			state.callExternal(pname, args);
+		} else {
+			state.stack.push(state.pc);
+			state.pc = p;
+			Proc proc = (Proc) state.program.get(p);
+			List<String> params = proc.getParams();
+			for (int i = 0; i < args.size(); i++) {
+				String arg = args.get(i);
+				String param = params.get(i);
+				state.store.put(param, state.store.get(arg));
+			}
+		}
+	}
 }

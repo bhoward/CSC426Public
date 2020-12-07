@@ -20,4 +20,9 @@ public class LetInt implements ICode {
 	public String toString() {
 		return place + " := " + value;
 	}
+
+	@Override
+	public void execute(State state) {
+		state.store.put(place, value);
+	}
 }

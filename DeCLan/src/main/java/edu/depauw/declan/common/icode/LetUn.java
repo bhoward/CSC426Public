@@ -25,6 +25,20 @@ public class LetUn implements ICode {
 		return place + " := " + op + " " + value;
 	}
 
+	@Override
+	public void execute(State state) {
+		switch (op) {
+		case INEG:
+			int ival = (int) state.store.get(value);
+			state.store.put(place, -ival);
+			break;
+		case RNEG:
+			double rval = (double) state.store.get(value);
+			state.store.put(place, -rval);
+			break;
+		}
+	}
+
 	public enum Op {
 		INEG, RNEG
 	}

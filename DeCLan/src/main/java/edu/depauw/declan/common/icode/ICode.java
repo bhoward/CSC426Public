@@ -7,5 +7,10 @@ package edu.depauw.declan.common.icode;
  * @author bhoward
  */
 public interface ICode {
-
+	/**
+	 * Perform the run-time action of this instruction.
+	 * 
+	 * @param state
+	 */
+	void execute(State state);
 }

@@ -12,4 +12,9 @@ public class End implements ICode {
 	public String toString() {
 		return "END";
 	}
+
+	@Override
+	public void execute(State state) {
+		state.pc = -1;
+	}
 }

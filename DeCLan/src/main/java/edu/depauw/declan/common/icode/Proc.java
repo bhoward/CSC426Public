@@ -19,6 +19,14 @@ public class Proc implements ICode {
 		this.pname = pname;
 		this.params = params;
 	}
+	
+	public String getName() {
+		return pname;
+	}
+	
+	public List<String> getParams() {
+		return params;
+	}
 
 	@Override
 	public String toString() {
@@ -35,5 +43,10 @@ public class Proc implements ICode {
 		}
 		sb.append(")");
 		return sb.toString();
+	}
+
+	@Override
+	public void execute(State state) {
+		// Do nothing
 	}
 }

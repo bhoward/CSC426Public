@@ -13,9 +13,18 @@ public class Label implements ICode {
 	public Label(String label) {
 		this.label = label;
 	}
+	
+	public String getName() {
+		return label;
+	}
 
 	@Override
 	public String toString() {
 		return "LABEL " + label;
+	}
+
+	@Override
+	public void execute(State state) {
+		// Do nothing
 	}
 }

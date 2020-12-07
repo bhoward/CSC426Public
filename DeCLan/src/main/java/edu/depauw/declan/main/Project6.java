@@ -10,6 +10,7 @@ import edu.depauw.declan.common.ParseException;
 import edu.depauw.declan.common.Parser;
 import edu.depauw.declan.common.ast.Program;
 import edu.depauw.declan.common.icode.ICode;
+import edu.depauw.declan.common.icode.State;
 
 /**
  * Main class for Project 6 -- Code generator for larger subset of DeCLan (Fall 2020).
@@ -63,6 +64,9 @@ public class Project6 {
 
 		try (Parser parser = config.getParser()) {
 			Program program = parser.parseProgram();
+			
+			// Interpret the program
+			program.accept(config.getInterpreter());
 
 			// Type-check the program, recording discovered type info in the checker object
 			Checker checker = config.getChecker();
@@ -76,6 +80,10 @@ public class Project6 {
 			for (ICode instr : code) {
 				System.out.println(instr);
 			}
+			
+			// Execute the intermediate code
+			State state = new State(code);
+			state.run();
 		} catch (ParseException pe) {
 			System.err.println(pe.getMessage());
 		}

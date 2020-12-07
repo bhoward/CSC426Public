@@ -21,4 +21,9 @@ public class LetVar implements ICode {
 	public String toString() {
 		return place + " := " + var;
 	}
+
+	@Override
+	public void execute(State state) {
+		state.store.put(place, state.store.get(var));
+	}
 }

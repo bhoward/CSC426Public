@@ -13,4 +13,9 @@ public class Return implements ICode {
 	public String toString() {
 		return "RETURN";
 	}
+
+	@Override
+	public void execute(State state) {
+		state.pc = state.stack.pop();
+	}
 }

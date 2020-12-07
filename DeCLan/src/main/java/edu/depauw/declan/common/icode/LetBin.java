@@ -28,6 +28,66 @@ public class LetBin implements ICode {
 		return place + " := " + left + " " + op + " " + right;
 	}
 
+	@Override
+	public void execute(State state) {
+		switch (op) {
+		case IADD: {
+			int lval = (int) state.store.get(left);
+			int rval = (int) state.store.get(right);
+			state.store.put(place, lval + rval);
+			break;
+		}
+		case ISUB: {
+			int lval = (int) state.store.get(left);
+			int rval = (int) state.store.get(right);
+			state.store.put(place, lval - rval);
+			break;
+		}
+		case IMUL: {
+			int lval = (int) state.store.get(left);
+			int rval = (int) state.store.get(right);
+			state.store.put(place, lval * rval);
+			break;
+		}
+		case IDIV: {
+			int lval = (int) state.store.get(left);
+			int rval = (int) state.store.get(right);
+			state.store.put(place, lval / rval);
+			break;
+		}
+		case IMOD: {
+			int lval = (int) state.store.get(left);
+			int rval = (int) state.store.get(right);
+			state.store.put(place, lval % rval);
+			break;
+		}
+		case RADD: {
+			double lval = (double) state.store.get(left);
+			double rval = (double) state.store.get(right);
+			state.store.put(place, lval + rval);
+			break;
+		}
+		case RSUB: {
+			double lval = (double) state.store.get(left);
+			double rval = (double) state.store.get(right);
+			state.store.put(place, lval - rval);
+			break;
+		}
+		case RMUL: {
+			double lval = (double) state.store.get(left);
+			double rval = (double) state.store.get(right);
+			state.store.put(place, lval * rval);
+			break;
+		}
+		case RDIV: {
+			double lval = (double) state.store.get(left);
+			double rval = (double) state.store.get(right);
+			state.store.put(place, lval / rval);
+			break;
+		}
+		}
+	}
+
 	public enum Op {
 		IADD, ISUB, IMUL, IDIV, IMOD, RADD, RSUB, RMUL, RDIV
 	}
