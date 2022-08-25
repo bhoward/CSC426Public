@@ -1,0 +1,3 @@
+Undefined variable 'isOdd'.
+[line 4] in <fn isEven>
+[line 12] in <script>

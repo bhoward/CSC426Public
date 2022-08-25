@@ -1,0 +1,5 @@
+   1      IDENTIFIER 'space'
+   |      IDENTIFIER 'tabs'
+   |      IDENTIFIER 'newlines'
+   6      IDENTIFIER 'end'
+  13             EOF ''

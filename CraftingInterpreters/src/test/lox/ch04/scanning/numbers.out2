@@ -1,0 +1,7 @@
+   1          NUMBER '123'
+   2          NUMBER '123.456'
+   3             DOT '.'
+   |          NUMBER '456'
+   4          NUMBER '123'
+   |             DOT '.'
+  13             EOF ''

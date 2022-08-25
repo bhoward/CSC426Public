@@ -1,0 +1,4 @@
+// Note: This is just for the expression evaluating chapter which evaluates an
+// expression directly.
+"string" == "st" + "ri" + "ng"
+// expect: true

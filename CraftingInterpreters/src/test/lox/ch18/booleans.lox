@@ -1,0 +1,4 @@
+// Note: This is just for the expression evaluating chapter which evaluates an
+// expression directly.
+!(5 - 4 > 3 * 2 == !nil)
+// expect: true
