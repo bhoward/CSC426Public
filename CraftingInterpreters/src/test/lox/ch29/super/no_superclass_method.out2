@@ -1,0 +1,3 @@
+Undefined property 'doesNotExist'.
+[line 5] in <fn foo>
+[line 9] in <script>

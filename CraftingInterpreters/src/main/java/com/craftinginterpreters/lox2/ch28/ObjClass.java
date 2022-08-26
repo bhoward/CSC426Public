@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class ObjClass {
     String name;
-    Map<String, ObjClosure> methods;
+    public Map<String, ObjClosure> methods;
 
     public ObjClass(String name) {
         this.name = name;

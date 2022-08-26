@@ -1,0 +1,3 @@
+Expected 2 arguments but got 1.
+[line 9] in <fn foo>
+[line 13] in <script>

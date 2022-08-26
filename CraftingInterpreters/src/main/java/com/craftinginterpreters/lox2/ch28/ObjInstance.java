@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ObjInstance {
-    ObjClass klass;
-    Map<String, Object> fields;
+    public ObjClass klass;
+    public Map<String, Object> fields;
 
     public ObjInstance(ObjClass klass) {
         this.klass = klass;
