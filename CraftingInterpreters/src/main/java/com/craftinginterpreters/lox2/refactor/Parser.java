@@ -147,7 +147,7 @@ public class Parser {
             compiler.defineVariable((byte) 0);
             namedVariable(className.lexeme, false);
             compiler.emitByte(OpCode.OP_INHERIT);
-            compiler.currentClass.hasSuperclass = true;
+            compiler.currentClass.setHasSuperclass();
         }
 
         namedVariable(className.lexeme, false);
@@ -158,11 +158,11 @@ public class Parser {
         consume(TokenType.RIGHT_BRACE, "Expect '}' after class body.");
         compiler.emitByte(OpCode.OP_POP);
 
-        if (compiler.currentClass.hasSuperclass) {
+        if (compiler.currentClass.hasSuperclass()) {
             compiler.endScope();
         }
 
-        compiler.currentClass = compiler.currentClass.enclosing;
+        compiler.currentClass = compiler.currentClass.getEnclosing();
     }
 
     private void method() {
@@ -542,7 +542,7 @@ public class Parser {
     private void super_(boolean canAssign) {
         if (compiler.currentClass == null) {
             error("Can't use 'super' outside of a class.");
-        } else if (!compiler.currentClass.hasSuperclass) {
+        } else if (!compiler.currentClass.hasSuperclass()) {
             error("Can't use 'super' in a class with no superclass.");
         }
 

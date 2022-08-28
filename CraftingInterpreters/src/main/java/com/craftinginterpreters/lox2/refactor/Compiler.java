@@ -79,8 +79,8 @@ public class Compiler {
     public void endScope() {
         scopeDepth--;
 
-        while (locals.size() > 0 && locals.get(locals.size() - 1).depth > scopeDepth) {
-            if (locals.get(locals.size() - 1).isCaptured) {
+        while (locals.size() > 0 && locals.get(locals.size() - 1).getDepth() > scopeDepth) {
+            if (locals.get(locals.size() - 1).isCaptured()) {
                 emitByte(OpCode.OP_CLOSE_UPVALUE);
             } else {
                 emitByte(OpCode.OP_POP);
@@ -184,11 +184,11 @@ public class Compiler {
         String name = parser.previous.lexeme;
         for (int i = locals.size() - 1; i >= 0; i--) {
             Local local = locals.get(i);
-            if (local.depth != -1 && local.depth < scopeDepth) {
+            if (local.getDepth() != -1 && local.getDepth() < scopeDepth) {
                 break;
             }
 
-            if (name.equals(local.name)) {
+            if (local.matches(name)) {
                 parser.error("Already a variable with this name in this scope.");
             }
         }
@@ -207,8 +207,8 @@ public class Compiler {
     public int resolveLocal(String name) {
         for (int i = locals.size() - 1; i >= 0; i--) {
             Local local = locals.get(i);
-            if (name.equals(local.name)) {
-                if (local.depth == -1) {
+            if (local.matches(name)) {
+                if (local.getDepth() == -1) {
                     parser.error("Can't read local variable in its own initializer");
                 }
                 return i;
@@ -224,7 +224,7 @@ public class Compiler {
 
         int local = enclosing.resolveLocal(name);
         if (local != -1) {
-            enclosing.locals.get(local).isCaptured = true;
+            enclosing.locals.get(local).setCaptured();
             return addUpvalue((byte) local, true);
         }
 
@@ -269,7 +269,7 @@ public class Compiler {
             return;
         }
         Local local = locals.get(locals.size() - 1);
-        local.depth = scopeDepth;
+        local.setDepth(scopeDepth);
     }
 
     public void emitReturn() {

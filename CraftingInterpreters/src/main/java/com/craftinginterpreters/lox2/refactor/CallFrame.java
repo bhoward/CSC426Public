@@ -1,9 +1,9 @@
 package com.craftinginterpreters.lox2.refactor;
 
 public class CallFrame {
-    private ObjClosure closure;
+    private final ObjClosure closure;
     private int ip;
-    private int fp; // Frame pointer
+    private final int fp; // Frame pointer
 
     public CallFrame(ObjClosure closure, int ip, int fp) {
         this.closure = closure;
