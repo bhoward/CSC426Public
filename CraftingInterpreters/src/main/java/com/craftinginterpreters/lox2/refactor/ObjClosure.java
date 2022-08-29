@@ -1,8 +1,8 @@
 package com.craftinginterpreters.lox2.refactor;
 
 public class ObjClosure {
-    public ObjFunction function;
-    public ObjUpvalue[] upvalues;
+    private final ObjFunction function;
+    private final ObjUpvalue[] upvalues;
 
     public ObjClosure(ObjFunction function) {
         this.function = function;
@@ -12,5 +12,13 @@ public class ObjClosure {
     @Override
     public String toString() {
         return function.toString();
+    }
+
+    public ObjFunction getFunction() {
+        return function;
+    }
+
+    public ObjUpvalue[] getUpvalues() {
+        return upvalues;
     }
 }
