@@ -63,12 +63,13 @@ public class VM {
 
     private boolean callValue(Object callee, int argCount) {
         if (callee instanceof ObjBoundMethod bound) {
-            stack.set(stack.size() - 1 - argCount, bound.receiver);
-            return call(bound.method, argCount);
+            stack.set(stack.size() - 1 - argCount, bound.getReceiver());
+            return call(bound.getMethod(), argCount);
         } else if (callee instanceof ObjClass klass) {
             stack.set(stack.size() - 1 - argCount, new ObjInstance(klass));
-            if (klass.methods.containsKey("init")) {
-                ObjClosure initializer = klass.methods.get("init");
+            var initOpt = klass.getMethod("init");
+            if (initOpt.isPresent()) {
+                ObjClosure initializer = initOpt.get();
                 return call(initializer, argCount);
             } else if (argCount != 0) {
                 runtimeError("Expected 0 arguments but got %d.", argCount);
@@ -109,22 +110,24 @@ public class VM {
     }
 
     private boolean invokeFromClass(ObjClass klass, String name, int argCount) {
-        if (!klass.methods.containsKey(name)) {
+        var nameOpt = klass.getMethod(name);
+        if (nameOpt.isEmpty()) {
             runtimeError("Undefined property '%s'.", name);
             return false;
         }
 
-        ObjClosure method = klass.methods.get(name);
+        ObjClosure method = nameOpt.get();
         return call(method, argCount);
     }
 
     private boolean bindMethod(ObjClass klass, String name) {
-        if (!klass.methods.containsKey(name)) {
+        var nameOpt = klass.getMethod(name);
+        if (nameOpt.isEmpty()) {
             runtimeError("Undefined property '%s'.", name);
             return false;
         }
 
-        ObjClosure method = klass.methods.get(name);
+        ObjClosure method = nameOpt.get();
         ObjBoundMethod bound = new ObjBoundMethod(peek(0), method);
         stack.pop();
         stack.push(bound);
@@ -409,7 +412,7 @@ public class VM {
                 case OP_INHERIT: {
                     if (peek(1) instanceof ObjClass superclass) {
                         ObjClass subclass = (ObjClass) peek(0);
-                        subclass.methods.putAll(superclass.methods);
+                        subclass.addSuperMethods(superclass);
                         stack.pop(); // Subclass.
                         break;
                     } else {
@@ -438,7 +441,7 @@ public class VM {
     private void defineMethod(String name) {
         ObjClosure method = (ObjClosure) peek(0);
         ObjClass klass = (ObjClass) peek(1);
-        klass.methods.put(name, method);
+        klass.addMethod(name, method);
         stack.pop();
     }
 

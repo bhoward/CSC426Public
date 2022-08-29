@@ -1,8 +1,8 @@
 package com.craftinginterpreters.lox2.refactor;
 
 public class ObjBoundMethod {
-    public Object receiver;
-    public ObjClosure method;
+    private Object receiver;
+    private ObjClosure method;
 
     public ObjBoundMethod(Object receiver, ObjClosure method) {
         this.receiver = receiver;
@@ -12,5 +12,13 @@ public class ObjBoundMethod {
     @Override
     public String toString() {
         return method.toString();
+    }
+
+    public Object getReceiver() {
+        return receiver;
+    }
+
+    public ObjClosure getMethod() {
+        return method;
     }
 }
