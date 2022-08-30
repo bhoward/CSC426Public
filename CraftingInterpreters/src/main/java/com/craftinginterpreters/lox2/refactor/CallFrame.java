@@ -12,27 +12,27 @@ public class CallFrame {
     }
 
     public ObjFunction getFunction() {
-        return closure.function;
+        return closure.getFunction();
     }
 
     public Chunk getChunk() {
-        return closure.function.chunk;
+        return closure.getFunction().chunk;
     }
 
     public ObjUpvalue getUpvalue(int slot) {
-        return closure.upvalues[slot];
+        return closure.getUpvalues()[slot];
     }
 
     public byte readByte() {
-        return closure.function.chunk.read(ip++);
+        return closure.getFunction().chunk.read(ip++);
     }
 
     public int getPreviousLine() {
-        return closure.function.chunk.getLine(ip - 1);
+        return closure.getFunction().chunk.getLine(ip - 1);
     }
 
     public void disassembleCurrentInstruction() {
-        closure.function.chunk.disassembleInstruction(ip);
+        closure.getFunction().chunk.disassembleInstruction(ip);
     }
 
     public void branch(int offset) {

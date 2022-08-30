@@ -12,6 +12,10 @@ public class VM {
         INTERPRET_OK, INTERPRET_COMPILE_ERROR, INTERPRET_RUNTIME_ERROR
     }
 
+    private static class RuntimeError extends RuntimeException {
+
+    }
+
     private Stack<CallFrame> frames = new Stack<>();
     private Stack<Object> stack = new Stack<>();
     private Map<String, Object> globals = new HashMap<>();
@@ -46,7 +50,7 @@ public class VM {
     }
 
     private boolean call(ObjClosure closure, int argCount) {
-        ObjFunction function = closure.function;
+        ObjFunction function = closure.getFunction();
         if (argCount != function.arity) {
             runtimeError("Expected %d arguments but got %d.", function.arity, argCount);
             return false;
@@ -96,13 +100,14 @@ public class VM {
     private boolean invoke(String name, int argCount) {
         Object receiver = peek(argCount);
         if (receiver instanceof ObjInstance instance) {
-            if (instance.fields.containsKey(name)) {
-                Object value = instance.fields.get(name);
+            var fieldOpt = instance.getField(name);
+            if (fieldOpt.isPresent()) {
+                Object value = fieldOpt.get();
                 stack.set(stack.size() - 1 - argCount, value);
                 return callValue(value, argCount);
             }
 
-            return invokeFromClass(instance.klass, name, argCount);
+            return invokeFromClass(instance.getKlass(), name, argCount);
         } else {
             runtimeError("Only instances have methods.");
             return false;
@@ -221,14 +226,15 @@ public class VM {
                     if (a instanceof ObjInstance instance) {
                         String name = (String) readConstant(frame);
 
-                        if (instance.fields.containsKey(name)) {
-                            Object value = instance.fields.get(name);
+                        var fieldOpt = instance.getField(name);
+                        if (fieldOpt.isPresent()) {
+                            Object value = fieldOpt.get();
                             stack.pop(); // Instance.
                             stack.push(value);
                             break;
                         }
 
-                        if (!bindMethod(instance.klass, name)) {
+                        if (!bindMethod(instance.getKlass(), name)) {
                             return Result.INTERPRET_RUNTIME_ERROR;
                         }
                         break;
@@ -243,7 +249,7 @@ public class VM {
                         String name = (String) readConstant(frame);
 
                         Object value = stack.pop();
-                        instance.fields.put(name, value);
+                        instance.putField(name, value);
                         stack.pop();
                         stack.push(value);
                         break;
@@ -373,13 +379,13 @@ public class VM {
                     ObjFunction function = (ObjFunction) readConstant(frame);
                     ObjClosure closure = new ObjClosure(function);
                     stack.push(closure);
-                    for (int i = 0; i < closure.upvalues.length; i++) {
+                    for (int i = 0; i < closure.getUpvalues().length; i++) {
                         byte isLocal = frame.readByte();
                         int index = frame.readByte() & 0xff;
                         if (isLocal == 1) {
-                            closure.upvalues[i] = captureUpvalue(frame.getFP() + index);
+                            closure.getUpvalues()[i] = captureUpvalue(frame.getFP() + index);
                         } else {
-                            closure.upvalues[i] = frame.getUpvalue(index);
+                            closure.getUpvalues()[i] = frame.getUpvalue(index);
                         }
                     }
                     break;
@@ -431,7 +437,7 @@ public class VM {
     }
 
     private void closeUpvalues(int last) {
-        while (openUpvalues != null && openUpvalues.index >= last) {
+        while (openUpvalues != null && openUpvalues.getIndex() >= last) {
             ObjUpvalue upvalue = openUpvalues;
             upvalue.close(stack);
             openUpvalues = upvalue.next;
@@ -448,12 +454,12 @@ public class VM {
     private ObjUpvalue captureUpvalue(int local) {
         ObjUpvalue prevUpvalue = null;
         ObjUpvalue upvalue = openUpvalues;
-        while (upvalue != null && upvalue.index > local) {
+        while (upvalue != null && upvalue.getIndex() > local) {
             prevUpvalue = upvalue;
             upvalue = upvalue.next;
         }
 
-        if (upvalue != null && upvalue.index == local) {
+        if (upvalue != null && upvalue.getIndex() == local) {
             return upvalue;
         }
 

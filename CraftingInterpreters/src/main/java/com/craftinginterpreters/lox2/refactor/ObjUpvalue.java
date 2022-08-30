@@ -3,9 +3,11 @@ package com.craftinginterpreters.lox2.refactor;
 import java.util.Stack;
 
 public class ObjUpvalue {
-    public int index;
-    Object value;
-    boolean isClosed;
+    private final int index;
+
+    private Object value;
+    private boolean isClosed;
+
     public ObjUpvalue next;
 
     public ObjUpvalue(int index) {
@@ -33,5 +35,9 @@ public class ObjUpvalue {
     public void close(Stack<Object> stack) {
         value = get(stack);
         isClosed = true;
+    }
+
+    public int getIndex() {
+        return index;
     }
 }
