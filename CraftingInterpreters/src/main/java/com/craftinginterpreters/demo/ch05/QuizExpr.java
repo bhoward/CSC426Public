@@ -1,4 +1,4 @@
-package com.craftinginterpreters.lox.ch05;
+package com.craftinginterpreters.demo.ch05;
 
 public abstract class QuizExpr {
     public interface Visitor {

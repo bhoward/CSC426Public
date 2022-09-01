@@ -1,9 +1,13 @@
-package com.craftinginterpreters.lox.ch04;
+package com.craftinginterpreters.demo.ch04;
 
 import static com.craftinginterpreters.lox.ch04.TokenType.*;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.craftinginterpreters.lox.ch04.Reporter;
+import com.craftinginterpreters.lox.ch04.Token;
+import com.craftinginterpreters.lox.ch04.TokenType;
 
 public class QuizScanner {
     private final String source;

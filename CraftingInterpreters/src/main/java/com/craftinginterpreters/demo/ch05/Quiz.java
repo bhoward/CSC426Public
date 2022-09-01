@@ -1,8 +1,8 @@
-package com.craftinginterpreters.lox.ch05;
+package com.craftinginterpreters.demo.ch05;
 
-import com.craftinginterpreters.lox.ch05.QuizExpr.Binary;
-import com.craftinginterpreters.lox.ch05.QuizExpr.Number;
-import com.craftinginterpreters.lox.ch05.QuizExpr.Visitor;
+import com.craftinginterpreters.demo.ch05.QuizExpr.Binary;
+import com.craftinginterpreters.demo.ch05.QuizExpr.Number;
+import com.craftinginterpreters.demo.ch05.QuizExpr.Visitor;
 
 public class Quiz {
     private static class QuizVisitor implements Visitor {

@@ -1,4 +1,4 @@
-package com.craftinginterpreters.lox.ch05;
+package com.craftinginterpreters.demo.ch05;
 
 public class RecQuizExprDemo {
     @SuppressWarnings("preview")
