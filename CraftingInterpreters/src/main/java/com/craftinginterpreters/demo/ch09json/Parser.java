@@ -22,53 +22,55 @@ public class Parser {
         this.reporter = reporter;
     }
 
-    public Object parse() {
+    public Expr parse() {
         try {
-            return value();
+            return expr();
         } catch (ParseError error) {
             return null;
         }
     }
 
-    private Object value() {
+    private Expr expr() {
         if (match(LEFT_BRACE)) {
-            return object();
+            return hash();
         } else if (match(LEFT_BRACKET)) {
             return array();
         } else if (match(STRING)) {
-            return previous().literal;
+            return new Expr.Literal(previous().literal);
         } else if (match(NUMBER)) {
-            return previous().literal;
+            return new Expr.Literal(previous().literal);
         } else if (match(TRUE)) {
-            return true;
+            return new Expr.Literal(true);
         } else if (match(FALSE)) {
-            return false;
+            return new Expr.Literal(false);
         } else if (match(NULL)) {
-            return null;
+            return new Expr.Literal(null);
+        } else if (match(IF)) {
+            return conditional();
         }
         throw error(peek(), "Expected value.");
     }
 
-    private Object array() {
-        List<Object> result = new ArrayList<>();
+    private Expr array() {
+        List<Expr> result = new ArrayList<>();
 
         if (!match(RIGHT_BRACKET)) {
-            Object element = value();
+            Expr element = expr();
             result.add(element);
 
             while (match(COMMA)) {
-                element = value();
+                element = expr();
                 result.add(element);
             }
 
             consume(RIGHT_BRACKET, "Expected closing ']'.");
         }
 
-        return result;
+        return new Expr.Array(result);
     }
 
-    private Object object() {
-        Map<String, Object> result = new HashMap<>();
+    private Expr hash() {
+        Map<String, Expr> result = new HashMap<>();
 
         if (!match(RIGHT_BRACE)) {
             var member = member();
@@ -82,15 +84,24 @@ public class Parser {
             consume(RIGHT_BRACE, "Expected closing '}'.");
         }
 
-        return result;
+        return new Expr.Hash(result);
     }
 
-    private Entry<String, Object> member() {
+    private Entry<String, Expr> member() {
         Token key = consume(STRING, "Expected string key.");
         consume(COLON, "Expected colon separating key from value.");
-        Object value = value();
+        Expr value = expr();
 
-        return new SimpleEntry<String, Object>((String) key.literal, value);
+        return new SimpleEntry<String, Expr>((String) key.literal, value);
+    }
+
+    private Expr conditional() {
+        Expr test = expr();
+        consume(THEN, "Expected 'then' after test of conditional.");
+        Expr ifTrue = expr();
+        consume(ELSE, "Expected 'else' after true clause of conditional.");
+        Expr ifFalse = expr();
+        return new Expr.Conditional(test, ifTrue, ifFalse);
     }
 
     private boolean match(TokenType... types) {

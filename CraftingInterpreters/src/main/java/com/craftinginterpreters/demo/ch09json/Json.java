@@ -49,7 +49,8 @@ public class Json {
         Scanner scanner = new Scanner(source, reporter);
         List<Token> tokens = scanner.scanTokens();
         Parser parser = new Parser(tokens, reporter);
-        Object value = parser.parse();
+        Expr expr = parser.parse();
+        Object value = expr.accept(new Interpreter());
 
         // Stop if there was a syntax error.
         if (reporter.hadError())
