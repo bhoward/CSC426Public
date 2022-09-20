@@ -31,10 +31,77 @@ public class Parser {
     }
 
     private Expr expr() {
+        if (match(IF)) {
+            return conditional();
+        } else {
+            return comparison();
+        }
+    }
+
+    private Expr comparison() {
+        Expr result = range();
+
+        if (match(EQUAL_EQUAL, BANG_EQUAL, GREATER, GREATER_EQUAL, LESS, LESS_EQUAL)) {
+            Token operator = previous();
+            result = new Expr.Binary(result, operator, range());
+        }
+
+        return result;
+    }
+
+    private Expr range() {
+        Expr result = additive();
+
+        if (match(RANGE)) {
+            Token operator = previous();
+            result = new Expr.Binary(result, operator, additive());
+        }
+
+        return result;
+    }
+
+    private Expr additive() {
+        Expr result = multiplicative();
+
+        while (match(PLUS, MINUS)) {
+            Token operator = previous();
+            result = new Expr.Binary(result, operator, multiplicative());
+        }
+
+        return result;
+    }
+
+    private Expr multiplicative() {
+        Expr result = selection();
+
+        while (match(STAR, SLASH)) {
+            Token operator = previous();
+            result = new Expr.Binary(result, operator, selection());
+        }
+
+        return result;
+    }
+
+    private Expr selection() {
+        Expr result = primary();
+
+        while (match(DOT)) {
+            Token operator = previous();
+            result = new Expr.Binary(result, operator, primary());
+        }
+
+        return result;
+    }
+
+    private Expr primary() {
         if (match(LEFT_BRACE)) {
             return hash();
         } else if (match(LEFT_BRACKET)) {
             return array();
+        } else if (match(LEFT_PAREN)) {
+            Expr result = expr();
+            consume(RIGHT_PAREN, "Expected closing ')'.");
+            return result;
         } else if (match(STRING)) {
             return new Expr.Literal(previous().literal);
         } else if (match(NUMBER)) {
@@ -45,8 +112,6 @@ public class Parser {
             return new Expr.Literal(false);
         } else if (match(NULL)) {
             return new Expr.Literal(null);
-        } else if (match(IF)) {
-            return conditional();
         }
         throw error(peek(), "Expected value.");
     }
@@ -96,7 +161,7 @@ public class Parser {
     }
 
     private Expr conditional() {
-        Expr test = expr();
+        Expr test = comparison();
         consume(THEN, "Expected 'then' after test of conditional.");
         Expr ifTrue = expr();
         consume(ELSE, "Expected 'else' after true clause of conditional.");
