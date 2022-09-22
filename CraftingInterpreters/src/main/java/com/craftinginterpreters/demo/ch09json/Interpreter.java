@@ -20,10 +20,10 @@ import com.craftinginterpreters.demo.ch09json.Expr.Variable;
 import com.craftinginterpreters.demo.ch09json.Expr.Visitor;
 
 public class Interpreter implements Visitor<Object> {
-    private Environment environment;
+    private Environment current;
 
     public Interpreter() {
-        this.environment = new Environment(null);
+        this.current = new Environment(null);
     }
 
     public Object visitLiteral(Literal expr) {
@@ -31,15 +31,15 @@ public class Interpreter implements Visitor<Object> {
     }
 
     public Object visitVariable(Variable expr) {
-        Object value = environment.get(expr.name());
+        Object value = current.get(expr.name());
 
         // Lazy evaluation of recursive binding.
         if (value instanceof Thunk t) {
-            Environment save = environment;
-            environment = t.closure();
+            Environment save = current;
+            current = t.closure();
             value = interpret(t.value());
-            environment = save;
-            environment.update(expr.name(), value);
+            current = save;
+            current.update(expr.name(), value);
         }
 
         return value;
@@ -170,13 +170,13 @@ public class Interpreter implements Visitor<Object> {
             List<Object> result = new ArrayList<>();
 
             for (Object element : array) {
-                Environment outer = environment;
-                environment = new Environment(outer);
+                Environment outer = current;
+                current = new Environment(outer);
 
-                environment.define(expr.name().lexeme, element);
+                current.define(expr.name().lexeme, element);
                 result.add(interpret(expr.result()));
 
-                environment = outer;
+                current = outer;
             }
 
             return result;
@@ -186,7 +186,7 @@ public class Interpreter implements Visitor<Object> {
     }
 
     public Object visitLet(Let expr) {
-        Environment outer = environment;
+        Environment outer = current;
         Environment inner = new Environment(outer);
 
         for (Binding binding : expr.bindings()) {
@@ -199,9 +199,9 @@ public class Interpreter implements Visitor<Object> {
             }
         }
 
-        environment = inner;
+        current = inner;
         Object result = interpret(expr.body());
-        environment = outer;
+        current = outer;
 
         return result;
     }
