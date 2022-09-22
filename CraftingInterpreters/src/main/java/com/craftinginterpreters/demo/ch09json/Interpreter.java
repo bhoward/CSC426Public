@@ -20,17 +20,31 @@ import com.craftinginterpreters.demo.ch09json.Expr.Variable;
 import com.craftinginterpreters.demo.ch09json.Expr.Visitor;
 
 public class Interpreter implements Visitor<Object> {
+    private Environment environment;
+
+    public Interpreter() {
+        this.environment = new Environment(null);
+    }
+
     public Object visitLiteral(Literal expr) {
         return expr.value();
     }
 
-    @Override
     public Object visitVariable(Variable expr) {
-        // TODO Auto-generated method stub
-        return null;
+        Object value = environment.get(expr.name());
+
+        // Lazy evaluation of recursive binding.
+        if (value instanceof Thunk t) {
+            Environment save = environment;
+            environment = t.closure();
+            value = interpret(t.value());
+            environment = save;
+            environment.update(expr.name(), value);
+        }
+
+        return value;
     }
 
-    @Override
     public Object visitBinary(Binary expr) {
         Object left = interpret(expr.left());
         Object right = interpret(expr.right());
@@ -105,7 +119,6 @@ public class Interpreter implements Visitor<Object> {
         return null;
     }
 
-    @Override
     public Object visitUnary(Unary expr) {
         Object right = interpret(expr.right());
 
@@ -118,13 +131,12 @@ public class Interpreter implements Visitor<Object> {
             return -(double) right;
 
         default:
-            // shouldn't happen
+            // should not happen.
             break;
         }
         return null;
     }
 
-    @Override
     public Object visitArray(Array expr) {
         List<Object> result = new ArrayList<>();
         for (Expr e : expr.elements()) {
@@ -133,7 +145,6 @@ public class Interpreter implements Visitor<Object> {
         return result;
     }
 
-    @Override
     public Object visitHash(Hash expr) {
         Map<String, Object> result = new HashMap<>();
         for (var entry : expr.members().entrySet()) {
@@ -142,7 +153,6 @@ public class Interpreter implements Visitor<Object> {
         return result;
     }
 
-    @Override
     public Object visitConditional(Conditional expr) {
         Object test = interpret(expr.test());
 
@@ -153,16 +163,47 @@ public class Interpreter implements Visitor<Object> {
         }
     }
 
-    @Override
     public Object visitComprehension(Comprehension expr) {
-        // TODO Auto-generated method stub
-        return null;
+        Object source = interpret(expr.source());
+
+        if (source instanceof List<?> array) {
+            List<Object> result = new ArrayList<>();
+
+            for (Object element : array) {
+                Environment outer = environment;
+                environment = new Environment(outer);
+
+                environment.define(expr.name().lexeme, element);
+                result.add(interpret(expr.result()));
+
+                environment = outer;
+            }
+
+            return result;
+        } else {
+            throw new RuntimeError(expr.name(), "Comprehension source must be an array.");
+        }
     }
 
-    @Override
     public Object visitLet(Let expr) {
-        // TODO Auto-generated method stub
-        return null;
+        Environment outer = environment;
+        Environment inner = new Environment(outer);
+
+        for (Binding binding : expr.bindings()) {
+            if (binding instanceof Binding.Simple b) {
+                inner.define(b.name().lexeme, interpret(b.value()));
+            } else if (binding instanceof Binding.Recursive b) {
+                inner.define(b.name().lexeme, new Thunk(b.value(), inner));
+            } else {
+                // Should not happen
+            }
+        }
+
+        environment = inner;
+        Object result = interpret(expr.body());
+        environment = outer;
+
+        return result;
     }
 
     private int compare(Token t, Object left, Object right) {

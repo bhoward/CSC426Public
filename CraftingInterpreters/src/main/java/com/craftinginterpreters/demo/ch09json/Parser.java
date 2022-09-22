@@ -33,6 +33,10 @@ public class Parser {
     private Expr expr() {
         if (match(IF)) {
             return conditional();
+        } else if (match(LET)) {
+            return let();
+        } else if (match(FOR)) {
+            return comprehension();
         } else {
             return comparison();
         }
@@ -102,6 +106,8 @@ public class Parser {
             Expr result = expr();
             consume(RIGHT_PAREN, "Expected closing ')'.");
             return result;
+        } else if (match(IDENTIFIER)) {
+            return new Expr.Variable(previous());
         } else if (match(STRING)) {
             return new Expr.Literal(previous().literal);
         } else if (match(NUMBER)) {
@@ -161,12 +167,46 @@ public class Parser {
     }
 
     private Expr conditional() {
-        Expr test = comparison();
+        Expr test = expr();
         consume(THEN, "Expected 'then' after test of conditional.");
         Expr ifTrue = expr();
         consume(ELSE, "Expected 'else' after true clause of conditional.");
         Expr ifFalse = expr();
+
         return new Expr.Conditional(test, ifTrue, ifFalse);
+    }
+
+    private Expr let() {
+        List<Binding> bindings = new ArrayList<>();
+
+        bindings.add(binding());
+        while (match(AND)) {
+            bindings.add(binding());
+        }
+        consume(IN, "Expected 'in' after let bindings.");
+        Expr body = expr();
+
+        return new Expr.Let(bindings, body);
+    }
+
+    private Binding binding() {
+        boolean isRecursive = match(REC);
+
+        Token name = consume(IDENTIFIER, "Expected identifier in binding.");
+        consume(EQUAL, "Expected '=' in binding.");
+        Expr value = expr();
+
+        return isRecursive ? new Binding.Recursive(name, value) : new Binding.Simple(name, value);
+    }
+
+    private Expr comprehension() {
+        Token name = consume(IDENTIFIER, "Expected identifier in comprehension.");
+        consume(IN, "Expected 'in' in comprehension.");
+        Expr source = expr();
+        consume(YIELD, "Expected 'yield' in comprehension.");
+        Expr result = expr();
+
+        return new Expr.Comprehension(name, source, result);
     }
 
     private boolean match(TokenType... types) {

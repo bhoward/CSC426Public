@@ -50,13 +50,18 @@ public class Json {
         List<Token> tokens = scanner.scanTokens();
         Parser parser = new Parser(tokens, reporter);
         Expr expr = parser.parse();
-        Object value = expr.accept(new Interpreter());
 
         // Stop if there was a syntax error.
         if (reporter.hadError())
             return;
 
-        System.out.println(value);
+        try {
+            Object value = expr.accept(new Interpreter());
+
+            System.out.println(value);
+        } catch (RuntimeError e) {
+            System.err.println("Error: " + e.getMessage());
+        }
     }
 
     static void reset() {
