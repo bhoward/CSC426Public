@@ -151,7 +151,24 @@ public class Scanner {
                 advance();
         }
 
-        // TODO also look for an exponent part.
+        // Look for an exponent part.
+        if (Character.toUpperCase(peek()) == 'E') {
+            // Consume the "E"
+            advance();
+
+            if (peek() == '+' || peek() == '-') {
+                // Consume the sign
+                advance();
+            }
+
+            if (isDigit(peek())) {
+                while (isDigit(peek()))
+                    advance();
+            } else {
+                reporter.error(line, "Malformed numeric literal.");
+                return;
+            }
+        }
 
         addToken(NUMBER, Double.parseDouble(source.substring(start, current)));
     }

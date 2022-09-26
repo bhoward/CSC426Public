@@ -1,17 +1,6 @@
 package com.craftinginterpreters.demo.ch06json;
 
-import static com.craftinginterpreters.demo.ch06json.TokenType.COLON;
-import static com.craftinginterpreters.demo.ch06json.TokenType.COMMA;
-import static com.craftinginterpreters.demo.ch06json.TokenType.EOF;
-import static com.craftinginterpreters.demo.ch06json.TokenType.FALSE;
-import static com.craftinginterpreters.demo.ch06json.TokenType.LEFT_BRACE;
-import static com.craftinginterpreters.demo.ch06json.TokenType.LEFT_BRACKET;
-import static com.craftinginterpreters.demo.ch06json.TokenType.NULL;
-import static com.craftinginterpreters.demo.ch06json.TokenType.NUMBER;
-import static com.craftinginterpreters.demo.ch06json.TokenType.RIGHT_BRACE;
-import static com.craftinginterpreters.demo.ch06json.TokenType.RIGHT_BRACKET;
-import static com.craftinginterpreters.demo.ch06json.TokenType.STRING;
-import static com.craftinginterpreters.demo.ch06json.TokenType.TRUE;
+import static com.craftinginterpreters.demo.ch06json.TokenType.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -123,7 +112,24 @@ public class Scanner {
                 advance();
         }
 
-        // TODO also look for an exponent part.
+        // Look for an exponent part.
+        if (Character.toUpperCase(peek()) == 'E') {
+            // Consume the "E"
+            advance();
+
+            if (peek() == '+' || peek() == '-') {
+                // Consume the sign
+                advance();
+            }
+
+            if (isDigit(peek())) {
+                while (isDigit(peek()))
+                    advance();
+            } else {
+                reporter.error(line, "Malformed numeric literal.");
+                return;
+            }
+        }
 
         addToken(NUMBER, Double.parseDouble(source.substring(start, current)));
     }
