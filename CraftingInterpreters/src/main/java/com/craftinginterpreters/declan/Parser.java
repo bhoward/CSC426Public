@@ -151,8 +151,10 @@ public class Parser {
 
         consume(LEFT_PAREN, "Expected '('.");
 
-        while (!check(RIGHT_PAREN) && !isAtEnd()) {
-            result.addAll(fpSection());
+        if (!check(RIGHT_PAREN) && !isAtEnd()) {
+            do {
+                result.addAll(fpSection());
+            } while (match(SEMICOLON));
         }
 
         consume(RIGHT_PAREN, "Expected ')'.");

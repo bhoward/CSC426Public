@@ -11,14 +11,37 @@ import java.util.List;
 public class DeCLan {
     private static Reporter reporter = new Reporter();
 
+    private static final String SAMPLE =
+    // @formatter:off to preserve line breaks in Eclipse
+            "CONST six = 6; seven = 7;\n"
+          + "VAR answer : INTEGER;\n"
+          + "PROCEDURE gcd(a, b: INTEGER; VAR result: INTEGER);\n"
+          + "  BEGIN\n"
+          + "    WHILE a # b DO\n"
+          + "      IF a > b THEN a := a - b ELSE b := b - a END\n"
+          + "    END;\n"
+          + "    result := a\n"
+          + "  END gcd;\n"
+          + "BEGIN\n"
+          + "  gcd(six, seven, answer);\n"
+          + "  answer := six * seven * answer;\n"
+          + "  WriteReal(answer * 1.);\n"
+          + "  WriteLn()\n"
+          + "END. (* Don't forget the ending period! *)";
+    // @formatter:on
+
     public static void main(String[] args) throws IOException {
         if (args.length > 1) {
-            System.out.println("Usage: declan [script]");
+            System.out.println("Usage: declan [file or -]");
             System.exit(64); // [64]
         } else if (args.length == 1) {
-            runFile(args[0]);
+            if (args[0].equals("-")) {
+                runStdin();
+            } else {
+                runFile(args[0]);
+            }
         } else {
-            runPrompt();
+            run(SAMPLE);
         }
     }
 
@@ -31,29 +54,20 @@ public class DeCLan {
             System.exit(65);
     }
 
-    private static void runPrompt() throws IOException {
+    private static void runStdin() throws IOException {
         InputStreamReader input = new InputStreamReader(System.in);
         BufferedReader reader = new BufferedReader(input);
 
-        for (;;) {
-            System.out.print("> ");
-            // A simple hack for DeCLan: read lines until we see one that ends with a
-            // period.
-            StringBuilder source = new StringBuilder();
+        StringBuilder source = new StringBuilder();
 
-            String line = reader.readLine();
-            while (line != null && !line.endsWith(".")) {
-                source.append(line);
-                source.append('\n');
-                line = reader.readLine();
-            }
-
-            if (line != null) {
-                source.append(line);
-            }
-
-            run(source.toString());
+        String line = reader.readLine();
+        while (line != null) {
+            source.append(line);
+            source.append('\n');
+            line = reader.readLine();
         }
+
+        run(source.toString());
     }
 
     static void run(String source) {

@@ -143,12 +143,16 @@ public class AstPrinter implements AstNode.Visitor<String> {
                 builder.append(expr.accept(this));
             } else if (part instanceof Stmt stmt) {
                 builder.append(stmt.accept(this));
+                builder.append("\n");
             } else if (part instanceof Decl decl) {
                 builder.append(decl.accept(this));
+                builder.append("\n");
             } else if (part instanceof Procedure proc) {
                 builder.append(proc.accept(this));
+                builder.append("\n");
             } else if (part instanceof Param param) {
                 builder.append(param.accept(this));
+                builder.append("\n");
             } else if (part instanceof Case kase) {
                 builder.append(kase.accept(this));
             } else if (part instanceof Token token) {
