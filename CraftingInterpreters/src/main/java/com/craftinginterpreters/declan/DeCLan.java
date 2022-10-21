@@ -83,7 +83,7 @@ public class DeCLan {
         Parser parser = new Parser(tokens, reporter);
         Program program = parser.parse();
 
-        System.out.println(new AstPrinter().print(program));
+        System.out.println(AstPrettyPrinter.print(program, 100));
     }
 
     static void reset() {
