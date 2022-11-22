@@ -44,6 +44,29 @@ public class Closures {
         };
     }
 
+    static class Demo3 {
+        private Closures closures;
+        private int m;
+        private String s;
+
+        public Demo3(final Closures closures, final int m, final String s) {
+            this.closures = closures;
+            this.m = m;
+            this.s = s;
+        }
+
+        public int apply(int n) {
+            System.out.printf("outer n = %d; inner n = %d; inner m = %d; inner s = %s\n", closures.n, n, m, s);
+            return n + 1;
+        }
+    }
+
+    public Demo3 demo3(String s) {
+        int m = 12;
+
+        return new Demo3(this, m, s);
+    }
+
     public static void main(String[] args) {
         Closures x = new Closures(42);
         System.out.println(x.demo1("Hello"));
@@ -52,5 +75,8 @@ public class Closures {
 
         var f = x.demo2("Lambda!");
         System.out.println(f.apply(37));
+
+        var g = x.demo3("Class!");
+        System.out.println(g.apply(37));
     }
 }
