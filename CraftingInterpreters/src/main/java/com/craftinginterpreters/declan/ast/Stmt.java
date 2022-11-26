@@ -1,8 +1,10 @@
-package com.craftinginterpreters.declan;
+package com.craftinginterpreters.declan.ast;
 
 import java.util.List;
 
-public abstract class Stmt extends AstNode {
+import com.craftinginterpreters.declan.Token;
+
+public abstract class Stmt {
     public interface Visitor<R> {
         R visitAssignmentStmt(Assignment stmt);
 
@@ -32,8 +34,8 @@ public abstract class Stmt extends AstNode {
         }
 
         @Override
-        public <R> R accept(AstNode.Visitor<R> visitor) {
-            return visitor.visitAssignmentStmt(this);
+        public String toString() {
+            return String.format("%d: %s := %s", name.line, name.lexeme, expr);
         }
 
         public final Token name;
@@ -52,8 +54,8 @@ public abstract class Stmt extends AstNode {
         }
 
         @Override
-        public <R> R accept(AstNode.Visitor<R> visitor) {
-            return visitor.visitCallStmt(this);
+        public String toString() {
+            return String.format("%d: CALL %s(...)", name.line, name.lexeme);
         }
 
         public final Token name;
@@ -61,15 +63,21 @@ public abstract class Stmt extends AstNode {
     }
 
     public static class Empty extends Stmt {
+        public Empty(Token next) {
+            this.next = next;
+        }
+
         @Override
         public <R> R accept(Visitor<R> visitor) {
             return visitor.visitEmptyStmt(this);
         }
 
         @Override
-        public <R> R accept(AstNode.Visitor<R> visitor) {
-            return visitor.visitEmptyStmt(this);
+        public String toString() {
+            return String.format("%d: EMPTY", next.line);
         }
+
+        public final Token next;
     }
 
     public static class For extends Stmt {
@@ -79,6 +87,8 @@ public abstract class Stmt extends AstNode {
             this.stop = stop;
             this.step = step;
             this.body = body;
+
+            this.stepValue = 0;
         }
 
         @Override
@@ -87,8 +97,8 @@ public abstract class Stmt extends AstNode {
         }
 
         @Override
-        public <R> R accept(AstNode.Visitor<R> visitor) {
-            return visitor.visitForStmt(this);
+        public String toString() {
+            return String.format("%d: FOR %s", name.line, name.lexeme);
         }
 
         public final Token name;
@@ -96,10 +106,13 @@ public abstract class Stmt extends AstNode {
         public final Expr stop;
         public final Expr step;
         public final List<Stmt> body;
+
+        public int stepValue;
     }
 
     public static class If extends Stmt {
-        public If(List<Case> cases, List<Stmt> elseClause) {
+        public If(Token head, List<Case> cases, List<Stmt> elseClause) {
+            this.head = head;
             this.cases = cases;
             this.elseClause = elseClause;
         }
@@ -110,16 +123,18 @@ public abstract class Stmt extends AstNode {
         }
 
         @Override
-        public <R> R accept(AstNode.Visitor<R> visitor) {
-            return visitor.visitIfStmt(this);
+        public String toString() {
+            return String.format("%d: IF ...", head.line);
         }
 
+        public final Token head;
         public final List<Case> cases;
         public final List<Stmt> elseClause;
     }
 
     public static class Repeat extends Stmt {
-        public Repeat(List<Stmt> body, Expr condition) {
+        public Repeat(Token head, List<Stmt> body, Expr condition) {
+            this.head = head;
             this.body = body;
             this.condition = condition;
         }
@@ -130,16 +145,18 @@ public abstract class Stmt extends AstNode {
         }
 
         @Override
-        public <R> R accept(AstNode.Visitor<R> visitor) {
-            return visitor.visitRepeatStmt(this);
+        public String toString() {
+            return String.format("%d: REPEAT ...", head.line);
         }
 
+        public final Token head;
         public final List<Stmt> body;
         public final Expr condition;
     }
 
     public static class While extends Stmt {
-        public While(List<Case> cases) {
+        public While(Token head, List<Case> cases) {
+            this.head = head;
             this.cases = cases;
         }
 
@@ -149,10 +166,11 @@ public abstract class Stmt extends AstNode {
         }
 
         @Override
-        public <R> R accept(AstNode.Visitor<R> visitor) {
-            return visitor.visitWhileStmt(this);
+        public String toString() {
+            return String.format("%d: WHILE ...", head.line);
         }
 
+        public final Token head;
         public final List<Case> cases;
     }
 

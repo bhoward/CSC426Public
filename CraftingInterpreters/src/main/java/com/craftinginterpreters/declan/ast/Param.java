@@ -1,15 +1,17 @@
-package com.craftinginterpreters.declan;
+package com.craftinginterpreters.declan.ast;
 
-public class Param extends AstNode {
+import com.craftinginterpreters.declan.Token;
+import com.craftinginterpreters.declan.Type;
+
+public class Param {
+    public interface Visitor<R> {
+        R visitParam(Param param);
+    }
+
     public Param(boolean isVar, Token name, Type type) {
         this.isVar = isVar;
         this.name = name;
         this.type = type;
-    }
-
-    @Override
-    public <R> R accept(Visitor<R> visitor) {
-        return visitor.visitParam(this);
     }
 
     public final boolean isVar;

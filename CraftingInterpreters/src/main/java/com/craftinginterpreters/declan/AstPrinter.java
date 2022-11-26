@@ -2,17 +2,25 @@ package com.craftinginterpreters.declan;
 
 import java.util.List;
 
-import com.craftinginterpreters.declan.Decl.ConstDecl;
-import com.craftinginterpreters.declan.Decl.VarDecl;
-import com.craftinginterpreters.declan.Stmt.Assignment;
-import com.craftinginterpreters.declan.Stmt.Call;
-import com.craftinginterpreters.declan.Stmt.Empty;
-import com.craftinginterpreters.declan.Stmt.For;
-import com.craftinginterpreters.declan.Stmt.Repeat;
+import com.craftinginterpreters.declan.ast.Case;
+import com.craftinginterpreters.declan.ast.Decl;
+import com.craftinginterpreters.declan.ast.Decl.ConstDecl;
+import com.craftinginterpreters.declan.ast.Decl.VarDecl;
+import com.craftinginterpreters.declan.ast.Expr;
+import com.craftinginterpreters.declan.ast.Param;
+import com.craftinginterpreters.declan.ast.Procedure;
+import com.craftinginterpreters.declan.ast.Program;
+import com.craftinginterpreters.declan.ast.Stmt;
+import com.craftinginterpreters.declan.ast.Stmt.Assignment;
+import com.craftinginterpreters.declan.ast.Stmt.Call;
+import com.craftinginterpreters.declan.ast.Stmt.Empty;
+import com.craftinginterpreters.declan.ast.Stmt.For;
+import com.craftinginterpreters.declan.ast.Stmt.Repeat;
 
-public class AstPrinter implements AstNode.Visitor<String> {
+public class AstPrinter implements Procedure.Visitor<String>, Expr.Visitor<String>, Stmt.Visitor<String>,
+        Decl.Visitor<String>, Program.Visitor<String>, Param.Visitor<String>, Case.Visitor<String> {
     String print(Program program) {
-        return program.accept(this);
+        return visitProgram(program);
     }
 
     String print(Expr expr) {
@@ -148,13 +156,13 @@ public class AstPrinter implements AstNode.Visitor<String> {
                 builder.append(decl.accept(this));
                 builder.append("\n");
             } else if (part instanceof Procedure proc) {
-                builder.append(proc.accept(this));
+                builder.append(visitProcedure(proc));
                 builder.append("\n");
             } else if (part instanceof Param param) {
-                builder.append(param.accept(this));
+                builder.append(visitParam(param));
                 builder.append("\n");
             } else if (part instanceof Case kase) {
-                builder.append(kase.accept(this));
+                builder.append(visitCase(kase));
             } else if (part instanceof Token token) {
                 builder.append(token.lexeme);
             } else if (part instanceof List<?> list) {

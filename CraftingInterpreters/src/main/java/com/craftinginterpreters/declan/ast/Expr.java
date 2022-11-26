@@ -1,6 +1,8 @@
-package com.craftinginterpreters.declan;
+package com.craftinginterpreters.declan.ast;
 
-public abstract class Expr extends AstNode {
+import com.craftinginterpreters.declan.Token;
+
+public abstract class Expr {
     public interface Visitor<R> {
         R visitBinaryExpr(Binary expr);
 
@@ -25,8 +27,8 @@ public abstract class Expr extends AstNode {
         }
 
         @Override
-        public <R> R accept(AstNode.Visitor<R> visitor) {
-            return visitor.visitBinaryExpr(this);
+        public String toString() {
+            return String.format("(%s %s %s)", left, operator.lexeme, right);
         }
 
         public final Expr left;
@@ -45,8 +47,8 @@ public abstract class Expr extends AstNode {
         }
 
         @Override
-        public <R> R accept(AstNode.Visitor<R> visitor) {
-            return visitor.visitLiteralExpr(this);
+        public String toString() {
+            return value.toString();
         }
 
         public final Object value;
@@ -64,8 +66,8 @@ public abstract class Expr extends AstNode {
         }
 
         @Override
-        public <R> R accept(AstNode.Visitor<R> visitor) {
-            return visitor.visitUnaryExpr(this);
+        public String toString() {
+            return String.format("(%s %s)", operator, right);
         }
 
         public final Token operator;
@@ -83,8 +85,8 @@ public abstract class Expr extends AstNode {
         }
 
         @Override
-        public <R> R accept(AstNode.Visitor<R> visitor) {
-            return visitor.visitVariableExpr(this);
+        public String toString() {
+            return name.lexeme;
         }
 
         public final Token name;

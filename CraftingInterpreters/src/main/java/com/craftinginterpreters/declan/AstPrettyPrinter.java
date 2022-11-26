@@ -4,21 +4,29 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-import com.craftinginterpreters.declan.Decl.ConstDecl;
-import com.craftinginterpreters.declan.Decl.VarDecl;
-import com.craftinginterpreters.declan.Expr.Binary;
-import com.craftinginterpreters.declan.Expr.Literal;
-import com.craftinginterpreters.declan.Expr.Unary;
-import com.craftinginterpreters.declan.Expr.Variable;
-import com.craftinginterpreters.declan.Stmt.Assignment;
-import com.craftinginterpreters.declan.Stmt.Call;
-import com.craftinginterpreters.declan.Stmt.Empty;
-import com.craftinginterpreters.declan.Stmt.For;
-import com.craftinginterpreters.declan.Stmt.If;
-import com.craftinginterpreters.declan.Stmt.Repeat;
-import com.craftinginterpreters.declan.Stmt.While;
+import com.craftinginterpreters.declan.ast.Case;
+import com.craftinginterpreters.declan.ast.Decl;
+import com.craftinginterpreters.declan.ast.Decl.ConstDecl;
+import com.craftinginterpreters.declan.ast.Decl.VarDecl;
+import com.craftinginterpreters.declan.ast.Expr;
+import com.craftinginterpreters.declan.ast.Expr.Binary;
+import com.craftinginterpreters.declan.ast.Expr.Literal;
+import com.craftinginterpreters.declan.ast.Expr.Unary;
+import com.craftinginterpreters.declan.ast.Expr.Variable;
+import com.craftinginterpreters.declan.ast.Param;
+import com.craftinginterpreters.declan.ast.Procedure;
+import com.craftinginterpreters.declan.ast.Program;
+import com.craftinginterpreters.declan.ast.Stmt;
+import com.craftinginterpreters.declan.ast.Stmt.Assignment;
+import com.craftinginterpreters.declan.ast.Stmt.Call;
+import com.craftinginterpreters.declan.ast.Stmt.Empty;
+import com.craftinginterpreters.declan.ast.Stmt.For;
+import com.craftinginterpreters.declan.ast.Stmt.If;
+import com.craftinginterpreters.declan.ast.Stmt.Repeat;
+import com.craftinginterpreters.declan.ast.Stmt.While;
 
-public class AstPrettyPrinter implements AstNode.Visitor<Void> {
+public class AstPrettyPrinter implements Procedure.Visitor<Void>, Expr.Visitor<Void>, Stmt.Visitor<Void>,
+        Decl.Visitor<Void>, Program.Visitor<Void>, Param.Visitor<Void>, Case.Visitor<Void> {
     private interface Block {
         boolean isSimple();
 
@@ -156,9 +164,9 @@ public class AstPrettyPrinter implements AstNode.Visitor<Void> {
         beginBlock("", "\n", "");
     }
 
-    public static String print(AstNode node, int width) {
+    public static String print(Program program, int width) {
         AstPrettyPrinter app = new AstPrettyPrinter(width);
-        node.accept(app);
+        app.visitProgram(program);
         return app.render();
     }
 
@@ -171,10 +179,6 @@ public class AstPrettyPrinter implements AstNode.Visitor<Void> {
         contexts.push(new Context(newWidth, start, sep, end));
     }
 
-    private void append(String text) {
-        contexts.peek().append(text);
-    }
-
     private Block endBlock() {
         Block block = contexts.pop().layout();
         if (!contexts.isEmpty()) {
@@ -183,26 +187,41 @@ public class AstPrettyPrinter implements AstNode.Visitor<Void> {
         return block;
     }
 
+    private void append(String text) {
+        contexts.peek().append(text);
+    }
+
+    private void appendPart(Object part) {
+        if (part instanceof Token token) {
+            append(token.lexeme);
+        } else if (part instanceof Expr expr) {
+            expr.accept(this);
+        } else if (part instanceof Stmt stmt) {
+            stmt.accept(this);
+        } else if (part instanceof Decl decl) {
+            decl.accept(this);
+        } else if (part instanceof Procedure proc) {
+            visitProcedure(proc);
+        } else if (part instanceof Param param) {
+            visitParam(param);
+        } else if (part instanceof Case kase) {
+            visitCase(kase);
+        } else if (part instanceof List<?> list) {
+            beginBlock("[", ", ", "]");
+            for (Object x : list) {
+                appendPart(x);
+            }
+            endBlock();
+        } else {
+            append(part.toString());
+        }
+    }
+
     private void appendNode(Object... parts) {
         beginBlock("(", " ", ")");
-
         for (Object part : parts) {
-            if (part instanceof Token token) {
-                append(token.lexeme);
-            } else if (part instanceof AstNode node) {
-                node.accept(this);
-            } else if (part instanceof List<?> list) {
-                beginBlock("[", ", ", "]");
-                for (Object x : list) {
-                    AstNode node = (AstNode) x;
-                    node.accept(this);
-                }
-                endBlock();
-            } else {
-                append(part.toString());
-            }
+            appendPart(part);
         }
-
         endBlock();
     }
 

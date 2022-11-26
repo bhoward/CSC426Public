@@ -8,6 +8,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
+import com.craftinginterpreters.declan.ast.Program;
+import com.craftinginterpreters.declan.resolved.RProg;
+
 public class DeCLan {
     private static Reporter reporter = new Reporter();
 
@@ -75,15 +78,16 @@ public class DeCLan {
         Scanner scanner = new Scanner(source, reporter);
         List<Token> tokens = scanner.scanTokens();
 
-        // For now, just print the tokens.
-        for (Token token : tokens) {
-            System.out.println(token);
-        }
-
         Parser parser = new Parser(tokens, reporter);
         Program program = parser.parse();
 
-        System.out.println(AstPrettyPrinter.print(program, 100));
+//        System.out.println(AstPrettyPrinter.print(program, 100));
+
+        RProg prog = TypeChecker.check(program, reporter, false);
+        if (!reporter.hadError()) {
+            Interpreter.run(program, false);
+//            Interpreter2.run(prog, false);
+        }
     }
 
     static void reset() {

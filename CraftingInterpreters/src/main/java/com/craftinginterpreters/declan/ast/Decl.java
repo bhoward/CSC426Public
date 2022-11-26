@@ -1,6 +1,9 @@
-package com.craftinginterpreters.declan;
+package com.craftinginterpreters.declan.ast;
 
-public abstract class Decl extends AstNode {
+import com.craftinginterpreters.declan.Token;
+import com.craftinginterpreters.declan.Type;
+
+public abstract class Decl {
     public interface Visitor<R> {
         R visitConstDecl(ConstDecl decl);
 
@@ -18,11 +21,6 @@ public abstract class Decl extends AstNode {
             return visitor.visitConstDecl(this);
         }
 
-        @Override
-        public <R> R accept(AstNode.Visitor<R> visitor) {
-            return visitor.visitConstDecl(this);
-        }
-
         public final Token name;
         public final Expr expr;
     }
@@ -35,11 +33,6 @@ public abstract class Decl extends AstNode {
 
         @Override
         public <R> R accept(Visitor<R> visitor) {
-            return visitor.visitVarDecl(this);
-        }
-
-        @Override
-        public <R> R accept(AstNode.Visitor<R> visitor) {
             return visitor.visitVarDecl(this);
         }
 

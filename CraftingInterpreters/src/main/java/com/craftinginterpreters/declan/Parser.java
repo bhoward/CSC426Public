@@ -6,6 +6,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import com.craftinginterpreters.declan.ast.Case;
+import com.craftinginterpreters.declan.ast.Decl;
+import com.craftinginterpreters.declan.ast.Expr;
+import com.craftinginterpreters.declan.ast.Param;
+import com.craftinginterpreters.declan.ast.Procedure;
+import com.craftinginterpreters.declan.ast.Program;
+import com.craftinginterpreters.declan.ast.Stmt;
+
 public class Parser {
     private static class ParseError extends RuntimeException {
     }
@@ -143,7 +151,7 @@ public class Parser {
 
         consume(SEMICOLON, "Expected ';' after procedure declaration.");
 
-        return new Procedure(name, params, decls, stmts);
+        return new Procedure(name, params, decls, stmts, false);
     }
 
     private List<Param> formalParameters() {
@@ -209,10 +217,11 @@ public class Parser {
             }
         }
 
-        return new Stmt.Empty();
+        return new Stmt.Empty(peek());
     }
 
     private Stmt ifStatement() {
+        Token head = previous();
         List<Case> cases = new ArrayList<>();
 
         cases.add(thenCase());
@@ -225,14 +234,15 @@ public class Parser {
 
         consume(END, "Expected 'END'.");
 
-        return new Stmt.If(cases, elseClause);
+        return new Stmt.If(head, cases, elseClause);
     }
 
     private Case thenCase() {
+        Token head = previous();
         Expr condition = expression();
         consume(THEN, "Expected 'THEN'.");
         List<Stmt> body = statementSequence();
-        return new Case(condition, body);
+        return new Case(head, condition, body);
     }
 
     private Stmt forStatement() {
