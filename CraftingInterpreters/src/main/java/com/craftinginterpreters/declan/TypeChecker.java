@@ -3,13 +3,21 @@ package com.craftinginterpreters.declan;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.craftinginterpreters.declan.ast.*;
+import com.craftinginterpreters.declan.ast.Case;
+import com.craftinginterpreters.declan.ast.ConstInfo;
+import com.craftinginterpreters.declan.ast.Decl;
 import com.craftinginterpreters.declan.ast.Decl.ConstDecl;
 import com.craftinginterpreters.declan.ast.Decl.VarDecl;
+import com.craftinginterpreters.declan.ast.Expr;
 import com.craftinginterpreters.declan.ast.Expr.Binary;
 import com.craftinginterpreters.declan.ast.Expr.Literal;
 import com.craftinginterpreters.declan.ast.Expr.Unary;
 import com.craftinginterpreters.declan.ast.Expr.Variable;
+import com.craftinginterpreters.declan.ast.Param;
+import com.craftinginterpreters.declan.ast.Procedure;
+import com.craftinginterpreters.declan.ast.Program;
+import com.craftinginterpreters.declan.ast.Scope;
+import com.craftinginterpreters.declan.ast.Stmt;
 import com.craftinginterpreters.declan.ast.Stmt.Assignment;
 import com.craftinginterpreters.declan.ast.Stmt.Call;
 import com.craftinginterpreters.declan.ast.Stmt.Empty;
@@ -17,6 +25,7 @@ import com.craftinginterpreters.declan.ast.Stmt.For;
 import com.craftinginterpreters.declan.ast.Stmt.If;
 import com.craftinginterpreters.declan.ast.Stmt.Repeat;
 import com.craftinginterpreters.declan.ast.Stmt.While;
+import com.craftinginterpreters.declan.ast.VarInfo;
 import com.craftinginterpreters.declan.resolved.Location;
 import com.craftinginterpreters.declan.resolved.RCase;
 import com.craftinginterpreters.declan.resolved.RExpr;
@@ -158,32 +167,9 @@ public class TypeChecker implements Expr.Visitor<RExpr>, Procedure.Visitor<RProc
 
     @Override
     public RExpr visitUnaryExpr(Unary expr) {
-        RExpr right = expr.right.accept(this);
+        // TODO Typecheck unary operators
 
-        switch (expr.operator.type) {
-        case PLUS:
-        case MINUS:
-            if (isInteger(right)) {
-                return RExpr.makeUnary(Type.INTEGER, expr.operator.type, right);
-            } else if (isNumeric(right)) {
-                return RExpr.makeUnary(Type.REAL, expr.operator.type, right);
-            } else {
-                reporter.error(expr.operator.line, "Operand must be numeric.");
-                return null;
-            }
-
-        case NOT:
-            if (isBoolean(right)) {
-                return RExpr.makeUnary(Type.BOOLEAN, expr.operator.type, right);
-            } else {
-                reporter.error(expr.operator.line, "Operand must be boolean.");
-                return null;
-            }
-
-        default:
-            // This should not happen.
-            return null;
-        }
+        return null;
     }
 
     @Override
@@ -336,27 +322,16 @@ public class TypeChecker implements Expr.Visitor<RExpr>, Procedure.Visitor<RProc
 
     @Override
     public RStmt visitRepeatStmt(Repeat stmt) {
-        List<RStmt> rbody = new ArrayList<>();
-        for (Stmt statement : stmt.body) {
-            rbody.add(statement.accept(this));
-        }
+        // TODO Typecheck a REPEAT - UNTIL statement
 
-        RExpr cond = stmt.condition.accept(this);
-        if (!isBoolean(cond)) {
-            reporter.error(stmt.head.line, "Condition must be boolean.");
-        }
-
-        return RStmt.makeRepeat(stmt.head.line, rbody, cond);
+        return null;
     }
 
     @Override
     public RStmt visitWhileStmt(While stmt) {
-        List<RCase> rcases = new ArrayList<>();
-        for (Case kase : stmt.cases) {
-            rcases.add(visitCase(kase));
-        }
+        // TODO Typecheck a WHILE - DO statement
 
-        return RStmt.makeWhile(stmt.head.line, rcases);
+        return null;
     }
 
     @Override

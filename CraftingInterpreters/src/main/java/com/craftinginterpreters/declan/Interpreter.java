@@ -209,29 +209,14 @@ public class Interpreter implements Expr.Visitor<Object>, Procedure.Visitor<Void
 
     @Override
     public Void visitRepeatStmt(Repeat stmt) {
-        boolean condition;
-        do {
-            visitStatementList(stmt.body);
-
-            condition = (boolean) stmt.condition.accept(this);
-        } while (!condition);
+        // TODO Interpret a REPEAT - UNTIL statement
 
         return null;
     }
 
     @Override
     public Void visitWhileStmt(While stmt) {
-        loop: while (true) {
-            for (Case kase : stmt.cases) {
-                boolean result = visitCase(kase);
-
-                if (result) {
-                    continue loop;
-                }
-            }
-
-            break loop;
-        }
+        // TODO Interpret a WHILE - DO statement
 
         return null;
     }

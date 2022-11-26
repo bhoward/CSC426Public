@@ -209,29 +209,14 @@ public class Interpreter2 implements RExpr.Visitor<Object>, RProc.Visitor<Void>,
 
     @Override
     public Void visitRepeat(Repeat stmt) {
-        boolean condition;
-        do {
-            visitStatementList(stmt.body);
-
-            condition = (boolean) stmt.cond.accept(this);
-        } while (!condition);
+        // TODO Interpret a REPEAT - UNTIL statement
 
         return null;
     }
 
     @Override
     public Void visitWhile(While stmt) {
-        loop: while (true) {
-            for (RCase kase : stmt.cases) {
-                boolean result = visitCase(kase);
-
-                if (result) {
-                    continue loop;
-                }
-            }
-
-            break loop;
-        }
+        // TODO Interpret a WHILE - DO statement
 
         return null;
     }
