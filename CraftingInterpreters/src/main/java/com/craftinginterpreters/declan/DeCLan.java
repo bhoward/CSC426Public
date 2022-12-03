@@ -99,13 +99,19 @@ public class DeCLan {
         if (!reporter.hadError()) {
 //            Interpreter.run(program, false);
 //            Interpreter2.run(prog, false);
+
             List<Instruction> instructions = Generator.generate(prog);
             for (Instruction instr : instructions) {
-                System.out.println(instr);
+                System.out.println("; " + instr);
             }
-            System.out.println("------");
+
             for (String s : Pep9.translate(instructions)) {
-                System.out.println(s);
+                if (s.endsWith(":")) {
+                    // Hack because of the PEP/9 assembler
+                    System.out.print(s + " ");
+                } else {
+                    System.out.println(s);
+                }
             }
         }
     }
