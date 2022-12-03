@@ -5,10 +5,12 @@ import com.craftinginterpreters.declan.Type;
 public class VarInfo {
     public Type type;
     public int slot;
+    public boolean isVarParam;
 
-    public VarInfo(Type type) {
+    public VarInfo(Type type, boolean isVarParam) {
         this.type = type;
         this.slot = 0;
+        this.isVarParam = isVarParam;
     }
 
     public boolean isConstant() {

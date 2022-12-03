@@ -95,9 +95,9 @@ public class Interpreter2 implements RExpr.Visitor<Object>, RProc.Visitor<Void>,
                 } else {
                     temp.setCell(i, new Cell(argValue));
                 }
-            } else {
-                temp.setCell(i, new Cell(proc.inits.get(i - nParms)));
-            }
+            } else if (i > nParms) {
+                temp.setCell(i, new Cell(proc.inits.get(i - 1 - nParms)));
+            } // skip the return address slot
         }
 
         if (proc.isStd) {
@@ -113,19 +113,20 @@ public class Interpreter2 implements RExpr.Visitor<Object>, RProc.Visitor<Void>,
     }
 
     private void callStdProc(int num, Frame frame) {
-        Location loc0 = new Location(0, true);
-        Location loc1 = new Location(1, true);
+        Location loc0 = new Location(0, true, false);
+        Location vloc0 = new Location(0, true, true);
+        Location vloc1 = new Location(1, true, true);
 
         switch (num) {
         case 0: { // ReadInt
             int n = in.nextInt();
-            frame.getCell(loc0).value = n;
+            frame.getCell(vloc0).value = n;
             break;
         }
 
         case 1: { // ReadReal
             double x = in.nextDouble();
-            frame.getCell(loc0).value = x;
+            frame.getCell(vloc0).value = x;
             break;
         }
 
@@ -148,7 +149,7 @@ public class Interpreter2 implements RExpr.Visitor<Object>, RProc.Visitor<Void>,
 
         case 5: { // Round
             double x = (double) frame.getCell(loc0).value;
-            frame.getCell(loc1).value = (int) Math.round(x);
+            frame.getCell(vloc1).value = (int) Math.round(x);
             break;
         }
         }

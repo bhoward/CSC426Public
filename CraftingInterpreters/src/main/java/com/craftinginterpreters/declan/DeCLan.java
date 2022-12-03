@@ -9,6 +9,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import com.craftinginterpreters.declan.ast.Program;
+import com.craftinginterpreters.declan.ir.Instruction;
 import com.craftinginterpreters.declan.resolved.RProg;
 
 public class DeCLan {
@@ -16,19 +17,30 @@ public class DeCLan {
 
     private static final String SAMPLE =
     // @formatter:off to preserve line breaks in Eclipse
-            "CONST six = 6; seven = 7;\n"
+            "CONST three = 3; seven = 7;\n"
           + "VAR answer : INTEGER;\n"
           + "PROCEDURE gcd(a, b: INTEGER; VAR result: INTEGER);\n"
+          + "  VAR m, n : INTEGER;\n"
           + "  BEGIN\n"
-          + "    WHILE a # b DO\n"
-          + "      IF a > b THEN a := a - b ELSE b := b - a END\n"
+          + "    m := a;"
+          + "    n := b;"
+          + "    WHILE m # n DO\n"
+          + "      IF m > n THEN m := m - n ELSE n := n - m END\n"
           + "    END;\n"
-          + "    result := a\n"
+          + "    result := m\n"
           + "  END gcd;\n"
+          + "PROCEDURE fact(n: INTEGER; VAR factn: INTEGER);\n"
+          + "  VAR factnm1 : INTEGER;\n"
+          + "  BEGIN\n"
+          + "    IF n = 0 THEN factn := 1\n"
+          + "    ELSE fact(n - 1, factnm1); factn := n * factnm1;\n"
+          + "    END\n"
+          + "  END fact;\n"
           + "BEGIN\n"
-          + "  gcd(six, seven, answer);\n"
-          + "  answer := six * seven * answer;\n"
-          + "  WriteReal(answer * 1.);\n"
+          + "  fact(three, answer);\n"
+          + "  gcd(answer, seven, answer);\n"
+          + "  answer := three * seven * (answer + answer);\n"
+          + "  WriteInt(answer);\n"
           + "  WriteLn()\n"
           + "END. (* Don't forget the ending period! *)";
     // @formatter:on
@@ -85,8 +97,16 @@ public class DeCLan {
 
         RProg prog = TypeChecker.check(program, reporter, false);
         if (!reporter.hadError()) {
-            Interpreter.run(program, false);
+//            Interpreter.run(program, false);
 //            Interpreter2.run(prog, false);
+            List<Instruction> instructions = Generator.generate(prog);
+            for (Instruction instr : instructions) {
+                System.out.println(instr);
+            }
+            System.out.println("------");
+            for (String s : Pep9.translate(instructions)) {
+                System.out.println(s);
+            }
         }
     }
 

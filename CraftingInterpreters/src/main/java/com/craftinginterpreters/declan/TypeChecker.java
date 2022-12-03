@@ -149,7 +149,7 @@ public class TypeChecker implements Expr.Visitor<RExpr>, Procedure.Visitor<RProc
         return expr.type == Type.BOOLEAN;
     }
 
-    private Type typeOf(Object value) {
+    public static Type typeOf(Object value) {
         if (value instanceof Integer) {
             return Type.INTEGER;
         } else if (value instanceof Double) {
@@ -176,14 +176,14 @@ public class TypeChecker implements Expr.Visitor<RExpr>, Procedure.Visitor<RProc
     public RExpr visitVariableExpr(Variable expr) {
         String name = expr.name.lexeme;
         VarInfo info = current.lookup(name);
-        boolean isLocal = current.contains(name);
+        boolean isLocal = current.contains(name) && current != global;
 
         if (info == null) {
             reporter.error(expr.name.line, "Unknown variable '" + name + "'.");
             return null;
         }
 
-        Location loc = new Location(info.slot, isLocal);
+        Location loc = new Location(info.slot, isLocal, info.isVarParam);
         return RExpr.makeVariable(info.type, loc);
     }
 
@@ -192,7 +192,7 @@ public class TypeChecker implements Expr.Visitor<RExpr>, Procedure.Visitor<RProc
         String name = stmt.name.lexeme;
         int line = stmt.name.line;
         VarInfo info = current.lookup(name);
-        boolean isLocal = current.contains(name);
+        boolean isLocal = current.contains(name) && current != global;
 
         if (info == null) {
             reporter.error(line, "Unknown variable '" + name + "'.");
@@ -201,7 +201,7 @@ public class TypeChecker implements Expr.Visitor<RExpr>, Procedure.Visitor<RProc
         } else {
             Type left = info.type;
             RExpr right = stmt.expr.accept(this);
-            Location loc = new Location(info.slot, isLocal);
+            Location loc = new Location(info.slot, isLocal, info.isVarParam);
 
             if (left == right.type) {
                 return RStmt.makeAssignment(line, left, loc, right);
@@ -256,7 +256,7 @@ public class TypeChecker implements Expr.Visitor<RExpr>, Procedure.Visitor<RProc
             }
         }
 
-        return RStmt.makeCall(line, proc.num, rargs);
+        return RStmt.makeCall(line, proc.num, rargs, name);
     }
 
     @Override
@@ -270,7 +270,7 @@ public class TypeChecker implements Expr.Visitor<RExpr>, Procedure.Visitor<RProc
         int line = stmt.name.line;
 
         VarInfo info = current.lookup(name);
-        boolean isLocal = current.contains(name);
+        boolean isLocal = current.contains(name) && current != global;
         if (info == null) {
             reporter.error(line, "Unknown variable '" + name + "'.");
         } else if (info.type != Type.INTEGER) {
@@ -278,7 +278,7 @@ public class TypeChecker implements Expr.Visitor<RExpr>, Procedure.Visitor<RProc
         } else if (info.isConstant()) {
             reporter.error(line, "Index variable must not be CONST.");
         }
-        Location loc = new Location(info.slot, isLocal);
+        Location loc = new Location(info.slot, isLocal, info.isVarParam);
 
         RExpr start = stmt.start.accept(this);
         if (!isInteger(start)) {
@@ -295,6 +295,10 @@ public class TypeChecker implements Expr.Visitor<RExpr>, Procedure.Visitor<RProc
             reporter.error(line, "Step index must be integral constant expression.");
         } else {
             stmt.stepValue = (int) stepValue;
+
+            if (stmt.stepValue == 0) {
+                reporter.error(line, "Step index must not be zero.");
+            }
         }
 
         List<RStmt> rbody = new ArrayList<>();
@@ -365,7 +369,7 @@ public class TypeChecker implements Expr.Visitor<RExpr>, Procedure.Visitor<RProc
             return null;
         }
 
-        current.add(name, new VarInfo(decl.type));
+        current.add(name, new VarInfo(decl.type, false));
 
         return defaultValue(decl.type);
     }
@@ -433,6 +437,9 @@ public class TypeChecker implements Expr.Visitor<RExpr>, Procedure.Visitor<RProc
             parms.add(visitParam(param));
         }
 
+        // Set aside a slot in the stack frame for the return address
+        current.add("_return_address", new VarInfo(null, false));
+
         List<Object> inits = new ArrayList<>();
         for (Decl decl : proc.decls) {
             inits.add(decl.accept(this));
@@ -445,7 +452,7 @@ public class TypeChecker implements Expr.Visitor<RExpr>, Procedure.Visitor<RProc
 
         current = global;
 
-        return RProc.makeProc(parms, inits, stmts, proc.getNumberOfSlots(), proc.isStd);
+        return RProc.makeProc(parms, inits, stmts, proc.getNumberOfSlots(), proc.isStd, proc.name.lexeme);
     }
 
     @Override
@@ -457,7 +464,7 @@ public class TypeChecker implements Expr.Visitor<RExpr>, Procedure.Visitor<RProc
             return null;
         }
 
-        current.add(name, new VarInfo(param.type));
+        current.add(name, new VarInfo(param.type, param.isVar));
 
         return new RParm(param.isVar);
     }

@@ -22,7 +22,7 @@ public class Frame {
     }
 
     public Cell getCell(Location loc) {
-        if (loc.isLocal) {
+        if (loc.isLocal || global == null) {
             return slots[loc.slot];
         } else {
             return global.slots[loc.slot];

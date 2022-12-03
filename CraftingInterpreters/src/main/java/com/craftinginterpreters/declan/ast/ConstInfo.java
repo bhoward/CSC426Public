@@ -6,7 +6,7 @@ public class ConstInfo extends VarInfo {
     public Object value;
 
     public ConstInfo(Type type, Object value) {
-        super(type);
+        super(type, false);
 
         this.value = value;
     }

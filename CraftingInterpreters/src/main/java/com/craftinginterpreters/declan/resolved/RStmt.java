@@ -53,11 +53,13 @@ public abstract class RStmt {
     public static class Call extends RStmt {
         public final int num;
         public final List<RExpr> args;
+        public String name;
 
-        public Call(int line, int num, List<RExpr> args) {
+        public Call(int line, int num, List<RExpr> args, String name) {
             super(line);
             this.num = num;
             this.args = args;
+            this.name = name;
         }
 
         @Override
@@ -179,8 +181,8 @@ public abstract class RStmt {
         return new Assignment(line, left, loc, right);
     }
 
-    public static RStmt makeCall(int line, int num, List<RExpr> args) {
-        return new Call(line, num, args);
+    public static RStmt makeCall(int line, int num, List<RExpr> args, String name) {
+        return new Call(line, num, args, name);
     }
 
     public static RStmt makeEmpty(int line) {
